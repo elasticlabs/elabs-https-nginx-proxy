@@ -8,8 +8,6 @@ SHELL         = /bin/bash
 # For cleanup, get Compose project name from .env file
 DC_PROJECT?=$(shell cat .env | sed 's/^*=//')
 
-# Set elasticsearch host
-ES_HOST?=es01.sdi.elasticlabs.co
 
 # Every command is a PHONY, to avoid file naming confliction -> strengh comes from good habits!
 .PHONY: help
