@@ -17,12 +17,11 @@ help:
 	@echo "  https://github.com/elasticlabs/https-nginx-proxy-docker-compose"
 	@echo " "
 	@echo " Hints for developers:"
-	@echo "  make build            # Checks that everythings's OK then biulds the stack"
+	@echo "  make build            # Checks that everythings's OK then builds the stack"
 	@echo "  make up               # With working proxy, brings up the software stack"
 	@echo "  make update           # Update the whole stack"
 	@echo "  make hard-cleanup     # /!\ Remove images, containers, networks, volumes & data"
 	@echo "=================================================================================="
-
 
 .PHONY: build
 build:
@@ -40,8 +39,8 @@ up: build
 	@echo "[INFO] Building the HTTPS automated proxy"
 	docker-compose up -d --remove-orphans
 
-.PHONY: cleanup
-cleanup:
+.PHONY: hard-cleanup
+hard-cleanup:
     @echo "[INFO] Bringing done the HTTPS automated proxy"
 	docker-compose -f docker-compose.yml down --remove-orphans
 	# 2nd : clean up all containers & images, without deleting static volumes

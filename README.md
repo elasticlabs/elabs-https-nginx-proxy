@@ -3,7 +3,6 @@ Automated nginx-proxy &amp; let's encrypt HTTPS reverse proxy for your dockerize
 Based on Jason Wilder's Nginx HTTP Proxy (https://github.com/nginx-proxy/nginx-proxy) 
 See Automated Nginx Reverse Proxy for Docker (http://jasonwilder.com/blog/2014/03/25/automated-nginx-reverse-proxy-for-docker/) for why you might want to use this.
 
-
 <p>
   <img src="https://raw.githubusercontent.com/elasticlabs/https-nginx-proxy-docker-compose/main/architecture.png" alt="Automated HTTPS proxy architecture" width="400px">
 </p>
