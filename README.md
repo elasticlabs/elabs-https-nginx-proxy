@@ -10,7 +10,7 @@ See Automated Nginx Reverse Proxy for Docker (http://jasonwilder.com/blog/2014/0
 
 **Table Of Contents:**
   - [Docker environment preparation](#docker-environment-preparation)
-  - [Nginx HTTPS Proxy preparation](#nginx-https-proxypreparation)
+  - [Nginx HTTPS Proxy preparation](#nginx-https-proxy-preparation)
   - [Stack deployment and management](#stack-deployment-and-management)
 
 ----
