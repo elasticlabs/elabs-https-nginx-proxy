@@ -5,43 +5,40 @@
 SHELL         = /bin/bash
 .SHELLFLAGS   = -o pipefail -c
 
-# For cleanup, get Compose project name from .env file
-DC_PROJECT?=$(shell cat .env | sed 's/^*=//')
-
+# Setup variables
+PROJECT_NAME?=$(shell cat .env | grep COMPOSE_PROJECT_NAME | sed 's/^*=//')
+APPS_NETWORK?=$(shell cat .env | grep APPS_NETWORK | sed 's/^*=//')
 
 # Every command is a PHONY, to avoid file naming confliction -> strengh comes from good habits!
 .PHONY: help
 help:
-	@echo "=============================================================================="
+	@echo "=================================================================================="
 	@echo " Automated HTTPS reverse proxy using Let's Encrypt SSL certificates "
 	@echo "  https://github.com/elasticlabs/https-nginx-proxy-docker-compose"
 	@echo " "
-	@echo "Hints for developers:"
-	@echo "  make up                     # With working proxy, brings up the SDI"
-	@echo "  make logs                   # Follows whole SDI logs (Geoserver, Geonetwork, PostGIS, Client app)"
-	@echo "  make down                   # Brings the SDI down. "
-	@echo "  make cleanup                # Complete hard cleanup of images, containers, networks, volumes & data of the SDI"
-	@echo "  make update                 # Update the whole stack"
-	@echo "=============================================================================="
+	@echo " Hints for developers:"
+	@echo "  make build            # Checks that everythings's OK then biulds the stack"
+	@echo "  make up               # With working proxy, brings up the software stack"
+	@echo "  make update           # Update the whole stack"
+	@echo "  make hard-cleanup     # /!\ Remove images, containers, networks, volumes & data"
+	@echo "=================================================================================="
 
+
+.PHONY: build
+build:
+    # Network creation if not done yet
+	@echo "[INFO] Create ${APPS_NETWORK} docker network if it doesn't already exists"
+	docker network inspect ${APPS_NETWORK} >/dev/null 2>&1 \
+		|| docker network create --driver bridge ${APPS_NETWORK}
+	# Build the stack
+	@echo "[INFO] Building the application"
+	docker-compose -f docker-compose.yml --build
+	@echo "[INFO] Build OK. Use make up to activate the automated proxy."
 
 .PHONY: up
-up:
+up: build
 	@echo "[INFO] Building the HTTPS automated proxy"
-	docker-compose up -d --remove-orphans --build nginx-proxy
-	docker-compose up -d --remove-orphans --build letsencrypt-companion
-	docker-compose up -d --remove-orphans --build portainer
-
-.PHONY: logs
-logs:
-    @echo "[INFO] Following latest logs"
-	docker-compose logs --follow
-
-.PHONY: down
-down:
-    @echo "[INFO] Bringing done the HTTPS automated proxy"
-	docker-compose down --remove-orphans
-	@echo "[INFO] Done. See (sudo make cleanup) for containers, images, and static volumes cleanup"
+	docker-compose up -d --remove-orphans
 
 .PHONY: cleanup
 cleanup:
@@ -54,9 +51,9 @@ cleanup:
 	docker system prune -a
     # Delete all hosted persistent data available in volumes
 	@echo "[INFO] Cleaning up static volumes"
-    docker volume rm -f $(DC_PROJECT)_certs
-	docker volume rm -f $(DC_PROJECT)_vhost.d
-	docker volume rm -f $(DC_PROJECT)_html
+    docker volume rm -f $(PROJECT_NAME)_certs
+	docker volume rm -f $(PROJECT_NAME)_vhost.d
+	docker volume rm -f $(PROJECT_NAME)_html
 	@echo "[INFO] Cleaning up portainer volume and data (/opt/portainer/data)."
 	rm -rf /opt/portainer/data
 	# Remove all dangling docker volumes
