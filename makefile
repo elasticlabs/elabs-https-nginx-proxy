@@ -41,16 +41,16 @@ up: build
 
 .PHONY: hard-cleanup
 hard-cleanup:
-    @echo "[INFO] Bringing done the HTTPS automated proxy"
+	@echo "[INFO] Bringing done the HTTPS automated proxy"
 	docker-compose -f docker-compose.yml down --remove-orphans
 	# 2nd : clean up all containers & images, without deleting static volumes
-    @echo "[INFO] Cleaning up containers & images"
+	@echo "[INFO] Cleaning up containers & images"
 	docker rm $(docker ps -a -q)
 	docker rmi $(docker images -q)
 	docker system prune -a
-    # Delete all hosted persistent data available in volumes
+	# Delete all hosted persistent data available in volumes
 	@echo "[INFO] Cleaning up static volumes"
-    docker volume rm -f $(PROJECT_NAME)_certs
+	docker volume rm -f $(PROJECT_NAME)_certs
 	docker volume rm -f $(PROJECT_NAME)_vhost.d
 	docker volume rm -f $(PROJECT_NAME)_html
 	@echo "[INFO] Cleaning up portainer volume and data (/opt/portainer/data)."
@@ -61,7 +61,7 @@ hard-cleanup:
 
 .PHONY pull
 pull: 
-    docker-compose pull    
+	docker-compose pull
 
 .PHONY: update
 update: pull up wait
