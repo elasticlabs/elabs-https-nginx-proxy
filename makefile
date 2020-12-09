@@ -8,6 +8,7 @@ SHELL         = /bin/bash
 # Setup variables
 PROJECT_NAME?=$(shell cat .env | grep -v ^\# | grep COMPOSE_PROJECT_NAME | sed 's/.*=//')
 APPS_NETWORK?=$(shell cat .env | grep -v ^\# | grep APPS_NETWORK | sed 's/.*=//')
+ADMIN_NETWORK?=$(shell cat .env | grep -v ^\# | grep ADMIN_NETWORK | sed 's/.*=//')
 
 # Every command is a PHONY, to avoid file naming confliction -> strengh comes from good habits!
 .PHONY: help
@@ -26,8 +27,9 @@ help:
 .PHONY: build
 build:
 	# Network creation if not done yet
-	@echo "[INFO] Create ${APPS_NETWORK} docker network if it doesn't already exists"
+	@echo "[INFO] Create ${APPS_NETWORK} and ${ADMIN_NETWORK} networks if they don't already exist"
 	docker network inspect ${APPS_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${APPS_NETWORK}
+	docker network inspect ${ADMIN_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${ADMIN_NETWORK}
 	# Build the stack
 	@echo "[INFO] Building the application"
 	docker-compose -f docker-compose.yml build
