@@ -59,7 +59,7 @@ hard-cleanup:
 	@echo "[INFO] Remove all dangling docker volumes"
 	docker volume rm $(shell docker volume ls -qf dangling=true)
 
-.PHONY pull
+.PHONY: pull
 pull: 
 	docker-compose pull
 
