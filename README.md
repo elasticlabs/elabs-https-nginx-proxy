@@ -24,9 +24,10 @@ See Automated Nginx Reverse Proxy for Docker (http://jasonwilder.com/blog/2014/0
 * Carefully create / choose an appropriate directory to group your applications GIT reposities (e.g. `~/AppContainers/`)
 * Choose & configure a selected DNS name (e.g. `portainer.your-domain.ltd`). Make sure it properly resolves from your server using `nslookup`commands
 * GIT clone this repository `git clone https://github.com/elasticlabs/https-nginx-proxy-docker-compose.git`
-* Modify the following variables in `.env` file :
+* Modify the following variables in `.env-changeme` file :
   * `PORTAINER_VHOST=` : replace `portainer.your-domain.ltd` with your choosen subdomain for portainer.
   * `LETSENCRYPT_EMAIL=` : replace `email@mail-provider.ltd` with the email address to get notifications on Certificates issues for your domain. 
+* **Rename `.env-changeme` file into `.env`** to ensure `docker-compose` gets its environement correctly.
 
 ## Stack deployment and management
 **Deployment**
