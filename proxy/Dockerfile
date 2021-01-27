@@ -1,3 +1,3 @@
 FROM jwilder/nginx-proxy:latest
 
-COPY uploadsize.conf /etc/nginx/conf.d/uploadsize.conf
+COPY elasticlabs.nginx.conf /etc/nginx/conf.d/elasticlabs.nginx.conf
