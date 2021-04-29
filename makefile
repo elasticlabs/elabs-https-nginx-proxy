@@ -7,6 +7,7 @@ SHELL         = /bin/bash
 
 # Setup variables
 PROJECT_NAME?=$(shell cat .env | grep -v ^\# | grep COMPOSE_PROJECT_NAME | sed 's/.*=//')
+APP_BASEURL?=$(shell cat .env | grep VIRTUAL_HOST | sed 's/.*=//')
 APPS_NETWORK?=$(shell cat .env | grep -v ^\# | grep APPS_NETWORK | sed 's/.*=//')
 ADMIN_NETWORK?=$(shell cat .env | grep -v ^\# | grep ADMIN_NETWORK | sed 's/.*=//')
 
@@ -27,38 +28,39 @@ help:
 .PHONY: build
 build:
 	# Network creation if not done yet
-	@echo "[INFO] Create ${APPS_NETWORK} and ${ADMIN_NETWORK} networks if they don't already exist"
+	@bash ./.utils/message.sh info "[INFO] Create ${APPS_NETWORK} and ${ADMIN_NETWORK} networks if they don't already exist"
 	docker network inspect ${APPS_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${APPS_NETWORK}
 	docker network inspect ${ADMIN_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${ADMIN_NETWORK}
 	# Build the stack
-	@echo "[INFO] Building the application"
+	@bash ./.utils/message.sh info "[INFO] Building the application"
 	docker-compose -f docker-compose.yml build
-	@echo "[INFO] Build OK. Use make up to activate the automated proxy."
+	@bash ./.utils/message.sh info "[INFO] Build OK. Use make up to activate the automated proxy."
 
 .PHONY: up
 up: build
-	@echo "[INFO] Building the HTTPS automated proxy"
+	@bash ./.utils/message.sh info "[INFO] Building the HTTPS automated proxy"
 	docker-compose up -d --remove-orphans
+	@make urls
 
 .PHONY: hard-cleanup
 hard-cleanup:
-	@echo "[INFO] Bringing done the HTTPS automated proxy"
+	@bash ./.utils/message.sh info "[INFO] Bringing done the HTTPS automated proxy"
 	docker-compose -f docker-compose.yml down --remove-orphans
-	# 2nd : clean up all containers & images, without deleting static volumes
-	@echo "[INFO] Cleaning up containers & images"
-	docker rm $(docker ps -a -q)
-	docker rmi $(docker images -q)
-	docker system prune -a
 	# Delete all hosted persistent data available in volumes
-	@echo "[INFO] Cleaning up static volumes"
+	@bash ./.utils/message.sh info "[INFO] Cleaning up static volumes"
 	docker volume rm -f $(PROJECT_NAME)_certs
 	docker volume rm -f $(PROJECT_NAME)_vhost.d
 	docker volume rm -f $(PROJECT_NAME)_html
-	@echo "[INFO] Cleaning up portainer volume and data (/opt/portainer/data)."
+	@bash ./.utils/message.sh info "[INFO] Cleaning up containers & images"
+	docker system prune -a
+	@bash ./.utils/message.sh info "[INFO] Cleaning up portainer static volume and data (/opt/portainer/data)."
 	rm -rf /opt/portainer/data
-	# Remove all dangling docker volumes
-	@echo "[INFO] Remove all dangling docker volumes"
-	docker volume rm $(shell docker volume ls -qf dangling=true)
+
+.PHONY: urls
+urls:
+	@bash ./.utils/message.sh headline "[INFO] You may now access your project at the following URL:"
+	@bash ./.utils/message.sh link "Portainer docker admin GUI:  https://${APP_BASEURL}/"
+	@echo ""
 
 .PHONY: pull
 pull: 
