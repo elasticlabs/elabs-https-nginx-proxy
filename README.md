@@ -4,7 +4,7 @@ Based on Jason Wilder's Nginx HTTP Proxy (https://github.com/nginx-proxy/nginx-p
 See Automated Nginx Reverse Proxy for Docker (http://jasonwilder.com/blog/2014/03/25/automated-nginx-reverse-proxy-for-docker/) for why you might want to use this.
 
 <p>
-  <img src="https://raw.githubusercontent.com/elasticlabs/elabs-https-nginx-proxy/main/architecture.png" alt="Automated HTTPS proxy architecture" width="400px">
+  <img src="https://raw.githubusercontent.com/elasticlabs/elabs-https-nginx-proxy/main/architecture.png" alt="Automated HTTPS proxy architecture" width="350px">
 </p>
 
 **Table Of Contents:**
