@@ -37,6 +37,7 @@ services:
 
   portainer:
     image: portainer/portainer-ce:latest
+    command: -H unix:///var/run/docker.sock
     container_name: ${COMPOSE_PROJECT_NAME}_portainer
     restart: always
     expose:
@@ -44,15 +45,12 @@ services:
     environment:
       - VIRTUAL_HOST=${PORTAINER_VHOST}
       - VIRTUAL_PORT=9000
-      - LETSENCRYPT_HOST=${PORTAINER_VHOST}
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
-    networks:
-      - revproxy_admin
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /opt/portainer/data:/data
     networks:
       - revproxy_admin
+
 
 volumes:
   certs:
