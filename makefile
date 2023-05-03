@@ -31,6 +31,8 @@ build:
 	@bash ./.utils/message.sh info "[INFO] Create ${APPS_NETWORK} and ${ADMIN_NETWORK} networks if they don't already exist"
 	docker network inspect ${APPS_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${APPS_NETWORK}
 	docker network inspect ${ADMIN_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${ADMIN_NETWORK}
+	# Set server_name in reverse proxy
+	sed -i "s/changeme/${APP_BASEURL}/" .proxy/portainer.subfolder.conf
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the application"
 	docker compose -f docker-compose.yml build
