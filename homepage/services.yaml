@@ -3,29 +3,6 @@
 # For icons, just specify the service name from https://github.com/walkxcode/dashboard-icons/tree/main/
 
 #
-# First come the information widgets section
-- resources:
-    cpu: true
-    memory: true
-    disk: /mnt/storage
-
-- resources:
-    disk: /mnt/backups
-
-- openmeteo:
-    label: Issy-les-Moulineaux # optional
-    latitude: 48.82
-    longitude: 2.28
-    timezone: Europe/Paris # optional
-    units: metric # or imperial
-    cache: 5 # Time in minutes to cache API responses, to stay within limits
-
-- search:
-    provider: google # google, duckduckgo, bing, baidu, brave or custom
-    focus: true # Optional, will set focus to the search bar on page load
-    target: _blank # One of _self, _blank, _parent or _top
-
-#
 # Then the services section
 - Administration:
     - Portainer:
@@ -56,20 +33,3 @@
 #        icon: mdi-flask-outline
 #        href: http://service.host/
 #        description: My cool service
-
-#
-# Here come the bookmarks section
-- Developer:
-    - Github:
-        - abbr: GH
-          href: https://github.com/
-
-- Social:
-    - Reddit:
-        - icon: reddit.png
-          href: https://reddit.com/
-
-- Entertainment:
-    - YouTube:
-        - abbr: YT
-          href: https://youtube.com/

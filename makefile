@@ -58,6 +58,7 @@ hard-cleanup:
 	@bash ./.utils/message.sh info "[INFO] Cleaning up portainer static volume and data (/opt/portainer/data)."
 	rm -rf /opt/portainer/data
 
+
 .PHONY: urls
 urls:
 	@bash ./.utils/message.sh headline "[INFO] You may now access your project at the following URL:"

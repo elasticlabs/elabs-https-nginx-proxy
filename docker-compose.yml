@@ -29,8 +29,11 @@ services:
     restart: always
     depends_on:
       - nginx-proxy
-    volumes_from:
-      - nginx-proxy
+    volumes:
+      - certs:/etc/nginx/certs
+      - vhost.d:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - proxy-tier
 
@@ -46,7 +49,6 @@ services:
     expose:
       - "9000"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - portainer-data:/data
     networks:
       - revproxy_admin
@@ -60,7 +62,7 @@ services:
     expose:
       - "3000"
     environment:
-      - VIRTUAL_PORT=80
+      - VIRTUAL_PORT=3000
       - VIRTUAL_HOST=${VIRTUAL_HOST}
       - LETSENCRYPT_HOST=${VIRTUAL_HOST}
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
