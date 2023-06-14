@@ -63,7 +63,7 @@ services:
       - VIRTUAL_PORT=80
       - VIRTUAL_HOST=${VIRTUAL_HOST}
       - LETSENCRYPT_HOST=${VIRTUAL_HOST}
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}=value
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     volumes:
       - ./homepage:/app/config # Make sure your local config directory exists
       - /var/run/docker.sock:/var/run/docker.sock
