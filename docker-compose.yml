@@ -41,6 +41,8 @@ services:
     command: -H unix:///var/run/docker.sock
     container_name: ${COMPOSE_PROJECT_NAME}_portainer
     restart: always
+    depends_on:
+      - nginx-proxy
     expose:
       - "9000"
     volumes:
@@ -53,6 +55,8 @@ services:
     image: ghcr.io/benphelps/homepage:latest
     container_name: ${COMPOSE_PROJECT_NAME}_homepage
     restart: always
+    depends_on:
+      - nginx-proxy
     expose:
       - "3000"
     environment:
@@ -72,11 +76,12 @@ services:
     image: authelia/authelia
     container_name: ${COMPOSE_PROJECT_NAME}_authelia
     restart: always
+    depends_on:
+      - nginx-proxy
     volumes:
       - ./authelia:/config
     networks:
       - revproxy_admin
-
 
 volumes:
   certs:
