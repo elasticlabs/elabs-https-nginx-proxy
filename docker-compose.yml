@@ -75,9 +75,8 @@ services:
     volumes:
       - ./authelia:/config
     networks:
-      - proxy
+      - revproxy_admin
 
-  
 
 volumes:
   certs:
