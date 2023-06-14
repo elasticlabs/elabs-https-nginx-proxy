@@ -7,7 +7,7 @@ SHELL         = /bin/bash
 
 # Setup variables
 PROJECT_NAME?=$(shell cat .env | grep -v ^\# | grep COMPOSE_PROJECT_NAME | sed 's/.*=//')
-APP_BASEURL?=$(shell cat .env | grep PORTAINER_VHOST | sed 's/.*=//')
+APP_BASEURL?=$(shell cat .env | grep VIRTUAL_HOST | sed 's/.*=//')
 APPS_NETWORK?=$(shell cat .env | grep -v ^\# | grep APPS_NETWORK | sed 's/.*=//')
 ADMIN_NETWORK?=$(shell cat .env | grep -v ^\# | grep ADMIN_NETWORK | sed 's/.*=//')
 
