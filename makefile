@@ -61,7 +61,7 @@ hard-cleanup:
 .PHONY: urls
 urls:
 	@bash ./.utils/message.sh headline "[INFO] You may now access your project at the following URL:"
-	@bash ./.utils/message.sh link "Portainer docker admin GUI:  https://${APP_BASEURL}/"
+	@bash ./.utils/message.sh link "Portainer docker admin GUI:  https://${APP_BASEURL}/portainer"
 	@echo ""
 
 .PHONY: pull

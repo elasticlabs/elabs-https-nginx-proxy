@@ -2,6 +2,8 @@ version: '3'
 
 
 services:
+  #
+  # We begin with the reverse proxy stack
   nginx-proxy:
     build: ./proxy
     container_name: ${COMPOSE_PROJECT_NAME}_entrypoint
@@ -27,14 +29,13 @@ services:
     restart: always
     depends_on:
       - nginx-proxy
-    volumes:
-      - certs:/etc/nginx/certs
-      - vhost.d:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+      - nginx-proxy
     networks:
       - proxy-tier
 
+  # 
+  # Now comes the admin services stack
   portainer:
     image: portainer/portainer-ce:latest
     command: -H unix:///var/run/docker.sock
@@ -42,20 +43,47 @@ services:
     restart: always
     expose:
       - "9000"
-    environment:
-      - VIRTUAL_HOST=${PORTAINER_VHOST}
-      - VIRTUAL_PORT=9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /opt/portainer/data:/data
+      - portainer-data:/data
     networks:
       - revproxy_admin
 
+  homepage:
+    image: ghcr.io/benphelps/homepage:latest
+    container_name: ${COMPOSE_PROJECT_NAME}_homepage
+    restart: always
+    expose:
+      - "3000"
+    environment:
+      - VIRTUAL_PORT=80
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}=value
+    volumes:
+      - ./homepage:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - revproxy_admin
+
+  # 
+  # Finally the security layer
+  authelia:
+    image: authelia/authelia
+    container_name: ${COMPOSE_PROJECT_NAME}_authelia
+    restart: always
+    volumes:
+      - ./authelia:/config
+    networks:
+      - proxy
+
+  
 
 volumes:
   certs:
   vhost.d:
   html:
+  portainer-data:
 
 networks:
   proxy-tier:
