@@ -9,9 +9,9 @@ services:
     build: ./proxy
     container_name: ${COMPOSE_PROJECT_NAME}_entrypoint
     restart: unless-stopped
-    ports:
-      - 80:80
-      - 443:443
+    expose:
+      - "80"
+      - "443"
     volumes:
       - conf:/etc/nginx/conf.d
       - vhost:/etc/nginx/vhost.d
@@ -62,7 +62,7 @@ volumes:
   certs:
   conf:
   html:
-  portainer_data:
+  portainer-data:
   vhost:
 
 networks:
