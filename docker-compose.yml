@@ -4,6 +4,7 @@ version: '3'
 services:
   #
   # We begin with the reverse proxy stack
+  # reference : https://github.com/nginx-proxy/acme-companion/blob/main/docs/Docker-Compose.md
   nginx-proxy:
     build: ./proxy
     container_name: ${COMPOSE_PROJECT_NAME}_entrypoint
@@ -12,15 +13,11 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - certs:/etc/nginx/certs:ro
-      - vhost.d:/etc/nginx/vhost.d
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
+      - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
-    environment:
-      - VIRTUAL_PORT=80
-      - VIRTUAL_HOST=${VIRTUAL_HOST}
-      - LETSENCRYPT_HOST=${VIRTUAL_HOST}
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     labels:
       - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy"
     networks:
@@ -28,75 +25,32 @@ services:
       - revproxy_admin
       - revproxy_apps
 
-  letsencrypt-companion:
-    image: jrcs/letsencrypt-nginx-proxy-companion:stable
-    container_name: ${COMPOSE_PROJECT_NAME}_entrypoint_le_companion
+  acme-companion:
+    image: nginxproxy/acme-companion:latest
+    container_name: ${COMPOSE_PROJECT_NAME}_entrypoint_acme
     restart: always
-    depends_on:
+    environment:
+      - DEFAULT_EMAIL=${LETSENCRYPT_EMAIL}
+    volumes_from:
       - nginx-proxy
     volumes:
-      - certs:/etc/nginx/certs
-      - vhost.d:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
-      - /var/run/docker.sock:/var/run/docker.sock
+      - certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - proxy-tier
 
-  # 
-  # Now comes the admin services stack
-  portainer:
-    image: portainer/portainer-ce:latest
-    command: -H unix:///var/run/docker.sock
-    container_name: ${COMPOSE_PROJECT_NAME}_portainer
-    restart: always
-    depends_on:
-      - nginx-proxy
-    expose:
-      - "9000"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer-data:/data
-    networks:
-      - revproxy_admin
-
-  homepage:
-    image: ghcr.io/benphelps/homepage:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_homepage
-    restart: always
-    depends_on:
-      - nginx-proxy
-    expose:
-      - "3000"
-    volumes:
-      - ./homepage:/app/config # Make sure your local config directory exists
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - revproxy_admin
-
-  # 
-  # Finally the security layer
-  authelia:
-    image: authelia/authelia
-    container_name: ${COMPOSE_PROJECT_NAME}_authelia
-    restart: always
-    depends_on:
-      - nginx-proxy
-    volumes:
-      - ./authelia:/config
-    networks:
-      - revproxy_admin
-
 volumes:
-  certs:
-  vhost.d:
+  conf:
+  vhost:
   html:
-  portainer-data:
+  certs:
 
 networks:
   proxy-tier:
   revproxy_admin:
-    external:
-      name: ${ADMIN_NETWORK}
+    name: revproxy_admin
+    external: true
   revproxy_apps:
-    external: 
-      name: ${APPS_NETWORK}
+    name: revproxy_apps
+    external: true
