@@ -40,6 +40,24 @@ services:
     networks:
       - proxy-tier
 
+  # 
+  # Now comes the admin services stack
+  portainer:
+    image: portainer/portainer-ce:latest
+    command: -H unix:///var/run/docker.sock
+    container_name: ${COMPOSE_PROJECT_NAME}_portainer
+    restart: always
+    depends_on:
+      - nginx-proxy
+    expose:
+      - "9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+    networks:
+      - revproxy_admin
+
+
 volumes:
   conf:
   vhost:
