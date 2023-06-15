@@ -32,7 +32,7 @@ build:
 	docker network inspect ${APPS_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${APPS_NETWORK}
 	docker network inspect ${ADMIN_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${ADMIN_NETWORK}
 	# Set server_name in reverse proxy
-	sed -i "s/changeme/${APP_BASEURL}/" ./proxy/labs.elasticalbs.conf
+	sed -i "s/changeme/${APP_BASEURL}/" ./proxy/labs.elasticlabs.conf
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the application"
 	docker compose -f docker-compose.yml build
@@ -55,6 +55,7 @@ hard-cleanup:
 	docker volume rm -f $(PROJECT_NAME)_html
 	@bash ./.utils/message.sh info "[INFO] Cleaning up containers & images"
 	docker system prune -a
+	docker volume prune -f
 	@bash ./.utils/message.sh info "[INFO] Cleaning up portainer static volume and data (/opt/portainer/data)."
 	rm -rf /opt/portainer/data
 

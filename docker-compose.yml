@@ -8,8 +8,8 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_entrypoint
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     volumes:
       - conf:/etc/nginx/conf.d
       - vhost:/etc/nginx/vhost.d
@@ -49,6 +49,12 @@ services:
       - nginx-proxy
     expose:
       - "9000"
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      - VIRTUAL_PATH=/portainer
+      - VIRTUAL_PORT=9000
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-data:/data
