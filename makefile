@@ -32,7 +32,7 @@ build:
 	docker network inspect ${APPS_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${APPS_NETWORK}
 	docker network inspect ${ADMIN_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${ADMIN_NETWORK}
 	# Set server_name in reverse proxy
-	sed -i "s/changeme/${APP_BASEURL}/" ./proxy/portainer.subfolder.conf
+	sed -i "s/changeme/${APP_BASEURL}/" ./proxy/labs.elasticalbs.conf
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the application"
 	docker compose -f docker-compose.yml build
