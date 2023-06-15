@@ -51,7 +51,7 @@ services:
       - "9000"
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST}
-      - VIRTUAL_PATH=/portainer
+#      - VIRTUAL_PATH=/portainer
       - VIRTUAL_PORT=9000
       - LETSENCRYPT_HOST=${VIRTUAL_HOST}
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
