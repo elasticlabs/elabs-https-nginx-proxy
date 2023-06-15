@@ -1,6 +1,4 @@
 version: '3'
-
-
 services:
   #
   # We begin with the reverse proxy stack
@@ -9,9 +7,9 @@ services:
     build: ./proxy
     container_name: ${COMPOSE_PROJECT_NAME}_entrypoint
     restart: unless-stopped
-    expose:
-      - "80"
-      - "443"
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
       - conf:/etc/nginx/conf.d
       - vhost:/etc/nginx/vhost.d
