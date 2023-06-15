@@ -57,12 +57,13 @@ services:
     networks:
       - revproxy_admin
 
-
 volumes:
-  conf:
-  vhost:
-  html:
+  acme:
   certs:
+  conf:
+  html:
+  portainer_data:
+  vhost:
 
 networks:
   proxy-tier:
