@@ -50,15 +50,12 @@ hard-cleanup:
 	docker compose -f docker-compose.yml down --remove-orphans
 	# Delete all hosted persistent data available in volumes
 	@bash ./.utils/message.sh info "[INFO] Cleaning up static volumes"
-	docker volume rm -f $(PROJECT_NAME)_certs
-	docker volume rm -f $(PROJECT_NAME)_vhost.d
+	docker volume rm -f $(PROJECT_NAME)_conf
+	docker volume rm -f $(PROJECT_NAME)_vhost
 	docker volume rm -f $(PROJECT_NAME)_html
+	docker volume rm -f $(PROJECT_NAME)_portainer_data
 	@bash ./.utils/message.sh info "[INFO] Cleaning up containers & images"
 	docker system prune -a
-	docker volume prune -f
-	@bash ./.utils/message.sh info "[INFO] Cleaning up portainer static volume and data (/opt/portainer/data)."
-	rm -rf /opt/portainer/data
-
 
 .PHONY: urls
 urls:
