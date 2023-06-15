@@ -16,6 +16,11 @@ services:
       - html:/usr/share/nginx/html
       - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
+    environment:
+      - VIRTUAL_HOST=*.${VIRTUAL_HOST}
+      - VIRTUAL_PORT=9000
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     labels:
       - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy"
     networks:
@@ -49,17 +54,27 @@ services:
       - nginx-proxy
     expose:
       - "9000"
-    environment:
-      - VIRTUAL_HOST=${VIRTUAL_HOST}
-#      - VIRTUAL_PATH=/portainer
-      - VIRTUAL_PORT=9000
-      - LETSENCRYPT_HOST=${VIRTUAL_HOST}
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-data:/data
     networks:
       - revproxy_admin
+
+  homepage:
+    image: ghcr.io/benphelps/homepage:latest
+    container_name: ${COMPOSE_PROJECT_NAME}_homepage
+    restart: always
+    depends_on:
+      - nginx-proxy
+    expose:
+      - "3000"
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      - VIRTUAL_PORT=3000
+    volumes:
+      - ./homepage:/app/config # Make sure your local config directory exists
+    networks:
+      - revproxy_apps
 
 volumes:
   acme:
