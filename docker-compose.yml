@@ -50,30 +50,31 @@ services:
     expose:
       - "9000"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - portainer-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - revproxy_admin
   
   # Server monitoring
-  homepage:
-    image: ghcr.io/benphelps/homepage:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_homepage
-    restart: always
-    depends_on:
-      - nginx-proxy
-    expose:
-      - "3000"
-    environment:
-      - VIRTUAL_HOST=labs.${VIRTUAL_HOST}
-      - VIRTUAL_PORT=3000
-      # Let's Encrypt configuration
-      - LETSENCRYPT_HOST=labs.${VIRTUAL_HOST},*.${VIRTUAL_HOST}
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
-    volumes:
-      - ./homepage:/app/config # Make sure your local config directory exists
-    networks:
-      - revproxy_apps
+  #homepage:
+  #  image: ghcr.io/benphelps/homepage:latest
+  #  container_name: ${COMPOSE_PROJECT_NAME}_homepage
+  #  restart: always
+  #  depends_on:
+  #    - nginx-proxy
+  #  expose:
+  #    - "3000"
+  #  environment:
+  #    - VIRTUAL_HOST=labs.${VIRTUAL_HOST}
+  #    - VIRTUAL_PORT=3000
+  #    # Let's Encrypt configuration
+  #    - LETSENCRYPT_HOST=labs.${VIRTUAL_HOST},*.${VIRTUAL_HOST}
+  #    - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+  #  volumes:
+  #    - ./homepage:/app/config # Make sure your local config directory exists
+  #    - html:/app/public
+  #  networks:
+  #    - revproxy_apps
 
 volumes:
   acme:

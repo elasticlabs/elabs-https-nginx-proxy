@@ -2,9 +2,9 @@
 # make sure that your portainer container is named portainer
 # portainer does not require a base url setting
 
-#    location /portainer {
-#        return 301 $scheme://$host/portainer/;
-#    }
+    location /portainer {
+        return 301 $scheme://$host/portainer/;
+    }
  
     location ^~ /portainer {
         # enable for Authelia (requires authelia-server.conf in the server block)
