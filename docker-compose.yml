@@ -65,10 +65,10 @@ services:
     expose:
       - "3000"
     environment:
-      - VIRTUAL_HOST=labs.${VIRTUAL_HOST}
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
       - VIRTUAL_PORT=3000
       # Let's Encrypt configuration
-      - LETSENCRYPT_HOST=labs.${VIRTUAL_HOST},*.${VIRTUAL_HOST}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST}
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     volumes:
       - ./homepage:/app/config # Make sure your local config directory exists
