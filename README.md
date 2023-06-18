@@ -34,6 +34,7 @@ Automated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS reverse app
 * GIT clone this repository `git clone https://github.com/elasticlabs/https-nginx-proxy-docker-compose.git`
 
 **Configuration**
+
 * **Rename `.env-changeme` file into `.env`** to ensure `docker-compose` gets its environement correctly.
 * Modify the following variables in `.env-changeme` file :
   * `VIRTUAL_HOST=` : replace `your-domain.ltd` with your choosen subdomain for homepage (e.g. example.com).
@@ -45,12 +46,14 @@ Automated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS reverse app
 | --- |
 
 **Deployment**
+
 * Get help : `make`
 * Bring up the whole stack : `make up`
   * If all goes well from the `make up` set of commands point of view, the available URLs are listed at the end of the process.
   * You can now begin to use the gateway. Enjoy!!
 
 **Useful management commands**
+
 * Go inside a container : `docker compose exec <service-id> /bin/bash` or `/bin/sh`
 * See logs of a container: `docker compose logs <service-id>`
 * Monitor containers : `docker compose stats` or... use portainer!
@@ -67,6 +70,7 @@ After deployment you have `5 minutes` to setup an `administrative user accomunt`
 * When this happen, simply restart Portainer : `docker compose restart portainer`, then create this 1st account. The tool is ready.
 
 **Authelia**
+
 Once Authelia is configured and tested OK on the server homepage, you can use it to secure access to your `Portainer` deployment.
 Please go to the [Authelia](#authelia) section to learn more.
 
@@ -79,6 +83,7 @@ I chose [Homepage](https://github.com/benphelps/homepage/) over others for its s
 Built with [Vue.js](https://vuejs.org/), [Bulma](https://bulma.io/) and [Buefy](https://buefy.org/), Homepage is a single page application (SPA) that you can host on your own server. It provides a quick way for you to access your favorites websites. It is meant to be fully customizable to suit your needs.
 
 **Configuration**
+
 * Homepage is configured through a couple of YAML files : 
   * `bookmarks.yml` : place here a list of your favorite websites, like in your web browser, but specialized for your deployment
   * `services.yml` : where you can [manually or automatically add your dockerized services](https://gethomepage.dev/en/configs/services/)
@@ -86,6 +91,7 @@ Built with [Vue.js](https://vuejs.org/), [Bulma](https://bulma.io/) and [Buefy](
   * `widgets.yml` : where you can add fancy and useful widgets to your homepage. Please go there to learn more!
 
 **Authelia**
+
 Once Authelia is configured and tested OK on the server homepage, you can use it to secure access to your `Homepage` deployment.
 Please go to the [Authelia](#authelia) section to learn more.
 
@@ -100,6 +106,7 @@ Big idea short : when thinking about deplying a new stack, you have 2 major choi
 * Or you want your stuff to live in a subdomain of your domain (e.g. `https://your-app.your-domain.ltd/`)
 
 **Subfolder**
+
 SWAG comes with tons of sample configuration files matching most common COTS on the market. You can find them in the `/config/nginx/proxy-confs/` folder. Please visit the [SWAG reverse proxy documentation](https://github.com/linuxserver/reverse-proxy-confs) to learn more.
 
 These configuration files follow a simple naming convention : `<app-name>.subfolder.conf.sample`.
@@ -114,6 +121,7 @@ To operate, you need to :
 * Restart SWAG to take the new configuration into account (e.g. `docker compose restart swag`)
 
 **Subdomain**
+
 This time, you need to create full `server` blocks for a given subdomain.
 Again, you can find sample config files in the `/config/nginx/proxy-confs/` folder. Please visit the [SWAG reverse proxy documentation](https://github.com/linuxserver/reverse-proxy-confs) to learn more.
 
