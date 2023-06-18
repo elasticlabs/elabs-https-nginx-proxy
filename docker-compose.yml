@@ -4,7 +4,7 @@ services:
   # We begin with the reverse proxy stack
   # reference : 
   swag-proxy:
-    build: ./proxy
+    image: lscr.io/linuxserver/swag
     container_name: ${COMPOSE_PROJECT_NAME}_swag-entrypoint
     restart: unless-stopped
     ports:
