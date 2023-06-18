@@ -1,91 +1,97 @@
-version: '3'
+version: '3.8'
 services:
   #
   # We begin with the reverse proxy stack
-  # reference : https://github.com/nginx-proxy/acme-companion/blob/main/docs/Docker-Compose.md
-  nginx-proxy:
+  # reference : 
+  swag-proxy:
     build: ./proxy
-    container_name: ${COMPOSE_PROJECT_NAME}_entrypoint
+    container_name: ${COMPOSE_PROJECT_NAME}_swag-entrypoint
     restart: unless-stopped
     ports:
-      - 80:80
-      - 443:443
+      - '80:80'
+      - '443:443'
     volumes:
-      - conf:/etc/nginx/conf.d
-      - vhost:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
-      - certs:/etc/nginx/certs:ro
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    labels:
-      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy"
+      - ${PWD}/data/swag/config:/config
+      # Uncomment the following line to push to name based volumes for production
+      # swag-config:/config
+    env_file:
+      - .env_swag-variables
+    environment:
+      - URL=${VIRTUAL_HOST}
+      # Uncomment if you're deploying on a main domain to activate subdomains like :
+      #- SUBDOMAINS=www,ftp,cloud 
+      - EMAIL=${CERTBOT_EMAIL}
+    cap_add:
+      - NET_ADMIN
     networks:
-      - proxy-tier
       - revproxy_admin
       - revproxy_apps
-
-  acme-companion:
-    image: nginxproxy/acme-companion:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_entrypoint_acme
-    restart: always
-    environment:
-      - DEFAULT_EMAIL=${LETSENCRYPT_EMAIL}
-    volumes_from:
-      - nginx-proxy
-    volumes:
-      - certs:/etc/nginx/certs:rw
-      - acme:/etc/acme.sh
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+  #
+  # Now comes the Authelia container
+  authelia:
+    container_name: ${COMPOSE_PROJECT_NAME}_authelia
+    image: authelia/authelia
+    restart: unless-stopped
+    expose:
+      - 9091
     networks:
-      - proxy-tier
-
+      - revproxy_admin
+    volumes:
+      - ${PWD}/data/authelia/config:/config
+      # Uncomment the following line to push to name based volumes for production
+      # authelia-config:/config
+    environment:
+      TZ: 'Australia/Melbourne'
   # 
   # Now comes the admin services stack
   portainer:
     image: portainer/portainer-ce:latest
-    command: -H unix:///var/run/docker.sock
     container_name: ${COMPOSE_PROJECT_NAME}_portainer
+    command: -H unix:///var/run/docker.sock
     restart: always
     depends_on:
-      - nginx-proxy
+      - swag-proxy
     expose:
       - "9000"
     volumes:
-      - portainer-data:/data
+      - ${PWD}/data/portainer:/data
+      # Uncomment the following line to push to name based volumes for production
+      # portainer-data:/data
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - revproxy_admin
-  
+  #
   # Server monitoring
-  homepage:
-    image: ghcr.io/benphelps/homepage:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_homepage
-    restart: always
-    depends_on:
-      - nginx-proxy
-    expose:
-      - "3000"
-    environment:
-      - VIRTUAL_HOST=${VIRTUAL_HOST}
-      - VIRTUAL_PORT=3000
-      # Let's Encrypt configuration
-      - LETSENCRYPT_HOST=${VIRTUAL_HOST}
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
-    volumes:
-      - ./homepage:/app/config # Make sure your local config directory exists
-      - html:/app/public
-    networks:
-      - revproxy_apps
+  #homepage:
+  #  image: ghcr.io/benphelps/homepage:latest
+  #  container_name: ${COMPOSE_PROJECT_NAME}_homepage
+  #  restart: always
+  #  depends_on:
+  #    - swag-proxy
+  #  expose:
+  #    - "3000"
+  #  environment:
+  #    - VIRTUAL_HOST=${VIRTUAL_HOST}
+  #    - VIRTUAL_PORT=3000
+  #    # Let's Encrypt configuration
+  #    - LETSENCRYPT_HOST=${VIRTUAL_HOST}
+  #    - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+  #  volumes:
+  #    - ${PWD}/data/homepage:/app/config
+  #    # Uncomment the following line to push to name based volumes for production
+  #    # homepage-config:/app/config
+  #    - html:/app/public
+  #  networks:
+  #    - revproxy_admin
 
-volumes:
-  acme:
-  certs:
-  conf:
-  html:
-  portainer-data:
-  vhost:
+#volumes:
+#  swag-config:
+#  authelia-config:
+#  portainer-data:
+#  homepage-config:
+#  html:
 
 networks:
-  proxy-tier:
   revproxy_admin:
     name: revproxy_admin
     external: true

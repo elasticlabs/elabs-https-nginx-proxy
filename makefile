@@ -8,6 +8,7 @@ SHELL         = /bin/bash
 # Setup variables
 PROJECT_NAME?=$(shell cat .env | grep -v ^\# | grep COMPOSE_PROJECT_NAME | sed 's/.*=//')
 APP_BASEURL?=$(shell cat .env | grep VIRTUAL_HOST | sed 's/.*=//')
+AUTHELIA?=$(shell cat .env | grep AUTHELIA_SUBDOMAIN | sed 's/.*=//')
 APPS_NETWORK?=$(shell cat .env | grep -v ^\# | grep APPS_NETWORK | sed 's/.*=//')
 ADMIN_NETWORK?=$(shell cat .env | grep -v ^\# | grep ADMIN_NETWORK | sed 's/.*=//')
 
@@ -31,8 +32,10 @@ build:
 	@bash ./.utils/message.sh info "[INFO] Create ${APPS_NETWORK} and ${ADMIN_NETWORK} networks if they don't already exist"
 	docker network inspect ${APPS_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${APPS_NETWORK}
 	docker network inspect ${ADMIN_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${ADMIN_NETWORK}
-	# Set server_name in reverse proxy
-	sed -i "s/changeme/$(APP_BASEURL)/" ./proxy/labs.elasticlabs.co.conf
+	#
+	# Set Authelia subdomain in 401 error redirection URL
+	sed -i "s/changeme/$(AUTHELIA)/" ./data/swag/config/nginx/snippets/authelia-authrequest.conf
+	#
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the application"
 	docker compose -f docker-compose.yml build
@@ -49,11 +52,11 @@ hard-cleanup:
 	@bash ./.utils/message.sh info "[INFO] Bringing done the HTTPS automated proxy"
 	docker compose -f docker-compose.yml down --remove-orphans
 	# Delete all hosted persistent data available in volumes
-	@bash ./.utils/message.sh info "[INFO] Cleaning up static volumes"
-	docker volume rm -f $(PROJECT_NAME)_conf
-	docker volume rm -f $(PROJECT_NAME)_vhost
-	docker volume rm -f $(PROJECT_NAME)_html
-	docker volume rm -f $(PROJECT_NAME)_portainer_data
+	#@bash ./.utils/message.sh info "[INFO] Cleaning up static volumes"
+	#docker volume rm -f $(PROJECT_NAME)_conf
+	#docker volume rm -f $(PROJECT_NAME)_vhost
+	#docker volume rm -f $(PROJECT_NAME)_html
+	#docker volume rm -f $(PROJECT_NAME)_portainer_data
 	@bash ./.utils/message.sh info "[INFO] Cleaning up containers & images"
 	docker system prune -a
 
