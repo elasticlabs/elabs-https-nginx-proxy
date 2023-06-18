@@ -6,6 +6,7 @@ Automated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS reverse app
   - [Homepage](https://github.com/benphelps/homepage/) for your deployment go-to... well... Homepage :-)
 
 
+
 **Table Of Contents:**
   - [Docker environment preparation](#docker-environment-preparation)
   - [Nginx HTTPS Proxy preparation](#nginx-https-proxy-preparation)
@@ -27,6 +28,7 @@ Automated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS reverse app
 ## Secure Application Proxy preparation
 | ▲ [Top](#https-secure-reverse-proxy) |
 | --- |
+
 * Carefully create / choose an appropriate directory to group your applications GIT reposities (e.g. `~/AppContainers/`)
 * Choose & configure a selected DNS name (e.g. `portainer.your-domain.ltd`). Make sure it properly resolves from your server using `nslookup`commands
 * GIT clone this repository `git clone https://github.com/elasticlabs/https-nginx-proxy-docker-compose.git`
@@ -41,6 +43,7 @@ Automated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS reverse app
 ## Stack deployment and management
 | ▲ [Top](#https-secure-reverse-proxy) |
 | --- |
+
 **Deployment**
 * Get help : `make`
 * Bring up the whole stack : `make up`
@@ -55,6 +58,7 @@ Automated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS reverse app
 ## Post-Install configuration
 | ▲ [Top](#https-secure-reverse-proxy) |
 | --- |
+
 After deploying the initial stack, comes real life! The following section describes what your get and how you can get and do more immediately after the first deployment.
 
 ### Portainer 
@@ -69,6 +73,7 @@ Please go to the [Authelia](#authelia) section to learn more.
 ### Homepage
 | ▲ [Top](#https-secure-reverse-proxy) |
 | --- |
+
 This secure gateway comes with a simple and fancy pre-configured `server homepage`. 
 I chose [Homepage](https://github.com/benphelps/homepage/) over others for its simplicity and its ability to be easily customized.
 Built with [Vue.js](https://vuejs.org/), [Bulma](https://bulma.io/) and [Buefy](https://buefy.org/), Homepage is a single page application (SPA) that you can host on your own server. It provides a quick way for you to access your favorites websites. It is meant to be fully customizable to suit your needs.
@@ -87,6 +92,7 @@ Please go to the [Authelia](#authelia) section to learn more.
 ### SWAG
 | ▲ [Top](#https-secure-reverse-proxy) |
 | --- |
+
 The goal of this section is to give you ideas on how to get started with the LinuxServer SWAG. We will explain some of the basic concepts and limitations, and provide you with common examples. 
 
 Big idea short : when thinking about deplying a new stack, you have 2 major choices to make :
