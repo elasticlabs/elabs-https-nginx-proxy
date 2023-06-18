@@ -16,7 +16,8 @@ Automated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS reverse app
     - [SWAG](#swag)
     - [Authelia](#authelia)
 
-----  https://docs.linuxserver.io/general/swag#web-hosting-examples
+
+----  
 
 ## Docker environment preparation
 * Install utility tools: `# yum install git nano make htop elinks wget tshark nano tree`
