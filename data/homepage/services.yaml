@@ -7,7 +7,7 @@
 - Administration:
     - Portainer:
         icon: portainer-alt.png
-        href: https://labs.elasticlabs.co/portainer/
+        href: https://lab.elasticlabs.co/portainer/
         description: Portainer docker stack management interface
         # Container connection
         server: localhost
@@ -15,7 +15,7 @@
 
     - Authelia:
         icon: authelia.png
-        href: https://labs.elasticlabs.co/authelia/
+        href: https://auth.elasticlabs.co/
         description: RBAS authentication portal
         server: localhost
         container: authelia

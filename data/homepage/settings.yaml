@@ -5,7 +5,7 @@ color: slate
 #emerald, teal, cyan, sky, blue, indigo, violet, purple, fuchsia, pink, rose, red, white
 iconStyle: theme # optional, defaults to gradient
 headerStyle: boxed # or clean
-base: https://labs.elasticlabs.co
+base: https://changeme
 language: fr
 target: _blank # Possible options include _blank, _self, and _top
 # You can use the ‘Quick Launch’ feature to search services, perform a web search or open a URL.

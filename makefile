@@ -16,8 +16,8 @@ ADMIN_NETWORK?=$(shell cat .env | grep -v ^\# | grep ADMIN_NETWORK | sed 's/.*=/
 .PHONY: help
 help:
 	@echo "=================================================================================="
-	@echo " Automated HTTPS reverse proxy using Let's Encrypt SSL certificates "
-	@echo "  https://github.com/elasticlabs/https-nginx-proxy-docker-compose"
+	@echo "        Secure HTTPS reverse proxy based on SWAG, Portainer and Authelia  "
+	@echo "       >> https://github.com/elasticlabs/https-nginx-proxy-docker-compose"
 	@echo " "
 	@echo " Hints for developers:"
 	@echo "  make build            # Checks that everythings's OK then builds the stack"
@@ -34,7 +34,9 @@ build:
 	docker network inspect ${ADMIN_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${ADMIN_NETWORK}
 	#
 	# Set Authelia subdomain in 401 error redirection URL
-	sed -i "s/changeme/$(AUTHELIA)/" ./data/swag/config/nginx/snippets/authelia-authrequest.conf
+	sed -i "s/changeme/${AUTHELIA}/" ./data/swag/config/nginx/snippets/authelia-authrequest.conf
+	# Set Homepage base URL
+	sed -i "s/changeme/${APP_BASEURL}/" ./data/homepage/settings.yaml
 	#
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the application"
@@ -52,18 +54,17 @@ hard-cleanup:
 	@bash ./.utils/message.sh info "[INFO] Bringing done the HTTPS automated proxy"
 	docker compose -f docker-compose.yml down --remove-orphans
 	# Delete all hosted persistent data available in volumes
-	#@bash ./.utils/message.sh info "[INFO] Cleaning up static volumes"
-	#docker volume rm -f $(PROJECT_NAME)_conf
-	#docker volume rm -f $(PROJECT_NAME)_vhost
+	@bash ./.utils/message.sh info "[INFO] Cleaning up static volumes"
 	#docker volume rm -f $(PROJECT_NAME)_html
-	#docker volume rm -f $(PROJECT_NAME)_portainer_data
 	@bash ./.utils/message.sh info "[INFO] Cleaning up containers & images"
 	docker system prune -a
 
 .PHONY: urls
 urls:
 	@bash ./.utils/message.sh headline "[INFO] You may now access your project at the following URL:"
-	@bash ./.utils/message.sh link "Portainer docker admin GUI:  https://${APP_BASEURL}/portainer"
+	@bash ./.utils/message.sh link "Homepage: https://${APP_BASEURL}/"
+	@bash ./.utils/message.sh link "Portainer docker admin GUI: https://${APP_BASEURL}/portainer"
+	@bash ./.utils/message.sh link "Authelia portal: https://${AUTHELIA}/"
 	@echo ""
 
 .PHONY: pull
