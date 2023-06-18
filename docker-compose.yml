@@ -62,34 +62,28 @@ services:
       - revproxy_admin
   #
   # Server monitoring
-  #homepage:
-  #  image: ghcr.io/benphelps/homepage:latest
-  #  container_name: ${COMPOSE_PROJECT_NAME}_homepage
-  #  restart: always
-  #  depends_on:
-  #    - swag-proxy
-  #  expose:
-  #    - "3000"
-  #  environment:
-  #    - VIRTUAL_HOST=${VIRTUAL_HOST}
-  #    - VIRTUAL_PORT=3000
-  #    # Let's Encrypt configuration
-  #    - LETSENCRYPT_HOST=${VIRTUAL_HOST}
-  #    - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
-  #  volumes:
-  #    - ${PWD}/data/homepage:/app/config
-  #    # Uncomment the following line to push to name based volumes for production
-  #    # homepage-config:/app/config
-  #    - html:/app/public
-  #  networks:
-  #    - revproxy_admin
+  homepage:
+    image: ghcr.io/benphelps/homepage:latest
+    container_name: ${COMPOSE_PROJECT_NAME}_homepage
+    restart: always
+    depends_on:
+      - swag-proxy
+    expose:
+      - "3000"
+    volumes:
+      - ${PWD}/data/homepage:/app/config
+      # Uncomment the following line to push to name based volumes for production
+      # homepage-config:/app/config
+      - html:/app/public
+    networks:
+      - revproxy_admin
 
-#volumes:
+volumes:
 #  swag-config:
 #  authelia-config:
 #  portainer-data:
 #  homepage-config:
-#  html:
+  html:
 
 networks:
   revproxy_admin:

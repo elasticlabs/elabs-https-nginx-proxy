@@ -7,6 +7,11 @@ Based on Secure Web Application Proxy (SWAG) (), and Authelia ()
   - [Nginx HTTPS Proxy preparation](#nginx-https-proxy-preparation)
   - [Stack deployment and management](#stack-deployment-and-management)
 
+
+
+https://docs.linuxserver.io/general/swag#web-hosting-examples
+
+
 ----
 
 ## Docker environment preparation 
