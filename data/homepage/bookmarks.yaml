@@ -1,17 +1,35 @@
 
 #
 # Here come the bookmarks section
+#
+# >> Complete doc at : https://gethomepage.dev/en/configs/bookmarks/
+# >> To check icons filenames, please visit: https://github.com/walkxcode/dashboard-icons
 - Developer:
     - Github:
-        - abbr: GH
-          href: https://github.com/
+        - icon: github.png
+          href: https://github.com/elasticlabs
+    - OneNote: 
+        - icon: onenote.png
+          href: https://www.microsoft365.com/launch/onenote
+    - MSTeams: 
+        - icon: msteams.png
+          href: https://teams.microsoft.com/
+    - Netlify:
+        - icon: netlify.png
+          href: https://app.netlify.com/
 
 - Social:
-    - Reddit:
-        - icon: reddit.png
-          href: https://reddit.com/
+    - Twitter:
+        - icon: twitter.png
+          href: https://twitter.com/
+    - Tweetdeck:
+        - icon: tweetdeck.png
+          href: https://tweetdeck.twitter.com/
 
 - Entertainment:
     - YouTube:
         - abbr: YT
           href: https://youtube.com/
+    - JetPunk: 
+        - abbr: JP
+          href: https://www.jetpunk.com/
