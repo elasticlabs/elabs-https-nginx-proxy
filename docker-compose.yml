@@ -14,6 +14,7 @@ services:
       - ${PWD}/data/swag/config:/config
       # Uncomment the following line to push to name based volumes for production
       # swag-config:/config
+      - certs:/etc/letsencrypt/
     env_file:
       - .env_swag-variables
     environment:
@@ -83,6 +84,7 @@ volumes:
 #  authelia-config:
 #  portainer-data:
 #  homepage-config:
+  certs:
   html:
 
 networks:

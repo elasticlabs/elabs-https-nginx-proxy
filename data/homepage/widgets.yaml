@@ -1,11 +1,18 @@
 
 #
 # First come the information widgets section
+#
+# >> Complete doc at : https://gethomepage.dev/en/configs/widgets/
 - resources:
     cpu: true
     memory: true
     disk: /
+- resources:
+    disk: /var/lib/docker/volumes/
 
+# No registration is required at all! See https://open-meteo.com/en/docs
+# You can optionally not pass a latitude and longitude and the widget will use 
+# your current location (requires a secure context, eg. HTTPS).
 - openmeteo:
     label: Issy-les-Moulineaux # optional
     latitude: 48.82

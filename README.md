@@ -5,8 +5,7 @@ Automated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS reverse app
   - Portainer for daily docker monitoring
   - [Homepage](https://github.com/benphelps/homepage/) for your deployment go-to... well... Homepage :-)
 
-
-
+<p>
 **Table Of Contents:**
   - [Docker environment preparation](#docker-environment-preparation)
   - [Nginx HTTPS Proxy preparation](#nginx-https-proxy-preparation)
@@ -84,7 +83,7 @@ Built with [Vue.js](https://vuejs.org/), [Bulma](https://bulma.io/) and [Buefy](
 
 **Configuration**
 
-* Homepage is configured through a couple of YAML files : 
+* Homepage is configured through [a couple of YAML files](https://gethomepage.dev/en/configs/service-widgets/): 
   * `bookmarks.yml` : place here a list of your favorite websites, like in your web browser, but specialized for your deployment
   * `services.yml` : where you can [manually or automatically add your dockerized services](https://gethomepage.dev/en/configs/services/)
   * `settings.yml` : to customize its behaviour

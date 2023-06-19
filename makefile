@@ -56,6 +56,7 @@ hard-cleanup:
 	# Delete all hosted persistent data available in volumes
 	@bash ./.utils/message.sh info "[INFO] Cleaning up static volumes"
 	#docker volume rm -f $(PROJECT_NAME)_html
+	@bash ./.utils/message.sh info "[INFO] The Letsencrypt CERT volumes are not deleted to avoid rate limiting"
 	@bash ./.utils/message.sh info "[INFO] Cleaning up containers & images"
 	docker system prune -a
 
