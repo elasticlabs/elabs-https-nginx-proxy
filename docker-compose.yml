@@ -19,9 +19,9 @@ services:
       - .env_swag-variables
     environment:
       - URL=${VIRTUAL_HOST}
+      - EMAIL=${CERTBOT_EMAIL}
       # Uncomment if you're deploying on a main domain to activate subdomains like :
       #- SUBDOMAINS=www,ftp,cloud 
-      - EMAIL=${CERTBOT_EMAIL}
     cap_add:
       - NET_ADMIN
     networks:
