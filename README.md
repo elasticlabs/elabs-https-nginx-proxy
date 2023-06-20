@@ -138,14 +138,18 @@ To operate, you need to :
 1. In the `.env_swag-variables` file : 
   * Uncomment the `DOCKER_MODS` variable
   * Replace `<licence-key>` with your [Maxmind licence key](https://www.maxmind.com/en/geolite2/signup) personal licence key 
-2. (Re)start SWAG to take the new configuration into account (e.g. `docker compose restart swag-proxy`)
 
-3. Add the following line to `/config/nginx/nginx.conf` under the `http` section:
+2. Rename the `./data/swag/config/nginx/site-confs/dash.subdomain.conf.sample` file to `./data/swag/config/nginx/site-confs/dash.subdomain.conf`
+Please ensure that the `server_name` directive matches your choosen subdomain (e.g. `dash.your-domain.ltd`) and that a matching DNS records exists. 
+
+3. (Re)start SWAG to take the new configuration into account (e.g. `docker compose restart swag-proxy`)
+
+4. Add the following line to `/config/nginx/nginx.conf` under the `http` section:
    
    ```nginx
    include /config/nginx/maxmind.conf;
    ```
-4. Edit `/config/nginx/maxmind.conf` and add countries to the blocklist / whitelist according to the comments, for example:
+5. Edit `/config/nginx/maxmind.conf` and add countries to the blocklist / whitelist according to the comments, for example:
    
     ```nginx
     map $geoip2_data_country_iso_code $geo-whitelist {
@@ -158,7 +162,7 @@ To operate, you need to :
         US no;
     }
     ```
-5. Use the definitions in the following way:
+6. Use the definitions in the following way:
    ```nginx
     server {
         listen 443 ssl;
@@ -173,7 +177,7 @@ To operate, you need to :
 
         location / {
     ```
-6. Restart the container to apply the changes.
+7. Restart the container to apply the changes.
 
 ### Authelia
 | ▲ [Top](#https-secure-reverse-proxy) |

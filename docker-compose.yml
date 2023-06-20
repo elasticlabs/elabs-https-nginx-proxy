@@ -33,16 +33,36 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_authelia
     image: authelia/authelia
     restart: unless-stopped
+    command: 
+      - "authelia" 
+      - "--config /config/configuration.yaml"
+      - "--config /config/configuration.acl.yaml"
+
     expose:
       - 9091
-    networks:
-      - revproxy_admin
     volumes:
       - ${PWD}/data/authelia/config:/config
       # Uncomment the following line to push to name based volumes for production
       # authelia-config:/config
     environment:
       TZ: 'Australia/Melbourne'
+    networks:
+      - revproxy_admin
+  # Redis image for Authelia
+  # https://www.authelia.com/configuration/session/redis/
+  authelia_redis:
+    image: redis:alpine
+    container_name: ${COMPOSE_PROJECT_NAME}_authelia_redis
+    restart: unless-stopped
+    expose:
+      - 6379
+    volumes:
+      - redis:/data
+    environment:
+      - TZ=America/Chicago
+    networks:
+      - revproxy_admin
+
   # 
   # Now comes the admin services stack
   portainer:
@@ -86,6 +106,7 @@ volumes:
 #  homepage-config:
   certs:
   html:
+  redis:
 
 networks:
   revproxy_admin:

@@ -1,49 +1,26 @@
 ########################################################################################################
-#                   Authelia configuration  thehomelab.wiki                                            #
-# https://thehomelab.wiki/books/dns-reverse-proxy/page/setup-authelia-to-work-with-nginx-proxy-manager #
+#                                    Authelia configuration                                            #
+#                                -->> ACL file for Authelia <<--                                       #
 ########################################################################################################
-host: 0.0.0.0
-port: 9091 # if you need this changed make sure it reflects also in the docker-compose.yml
-log_level: info
-jwt_secret: A4gYb7QFpbfKaNWAX7P7FX5y00*
-default_redirection_url: https://auth.changeme
-totp:
-  issuer: changeme
-  period: 30
-  skew: 1
 
-#duo_api:     ## If you want push notifictions of login attempts you can pay for this feature
-#  hostname: api-123456789.example.com
-#  integration_key: ABCDEF
-#  secret_key: yet-another-long-string-of-characters-and-numbers-and-symbols
-
-authentication_backend:
-  disable_reset_password: false
-  file:
-    path: /config/users_database.yml # Make sure this file exists
-    password:
-      algorithm: argon2id
-      iterations: 1
-      salt_length: 16
-      parallelism: 8
-      memory: 64
 
 access_control:
   default_policy: deny
   rules:
     # Rules applied to everyone
-    - domain:
-        - "auth.changeme"
+    #- domain:
+    #    - "auth.changeme"
+    #    - "lab.changeme"
+    #  policy: bypass
+    - domain: # Proxies only requiring username and password
         - "lab.changeme"
-      policy: bypass
-#    - domain: # Proxies only requiring username and password
-#        - "homer.changeme"
-#      policy: one_factor
+      policy: one_factor
 #      networks:
 #        - 192.168.1.0/24
-#    - domain: # Proxies needing 2 factor below
-#        - "proxmox.changeme"
-#      policy: two_factor
+    - domain: # Proxies needing 2 factor below
+        - "auth.changeme"
+        - "dash.changeme"
+      policy: two_factor
 #      networks:
 #         - 192.168.1.0/24
          
@@ -56,17 +33,17 @@ session:
   domain: changeme # Needs to be your root domain
 
   redis:
-    host: authelia_redis_1
+    host: authelia_redis
     port: 6379
     # This secret can also be set using the env variables AUTHELIA_SESSION_REDIS_PASSWORD_FILE
-#    password: authelia
+    #    password: authelia
 
 regulation:
   max_retries: 5
   find_time: 2m
   ban_time: 10m
 
-theme: dark   # options: dark, light
+theme: light   # options: dark, light
 
 storage:
   local:

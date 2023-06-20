@@ -23,6 +23,7 @@ help:
 	@echo "  make build            # Checks that everythings's OK then builds the stack"
 	@echo "  make up               # With working proxy, brings up the software stack"
 	@echo "  make update           # Update the whole stack"
+	@echo "  make authelia-hash    # Create a hashed password for Authelia users"
 	@echo "  make hard-cleanup     # /!\ Remove images, containers, networks, volumes & data"
 	@echo "=================================================================================="
 
@@ -33,21 +34,36 @@ build:
 	docker network inspect ${APPS_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${APPS_NETWORK}
 	docker network inspect ${ADMIN_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${ADMIN_NETWORK}
 	#
-	# Set Authelia subdomain in 401 error redirection URL
-	sed -i "s/changeme/${AUTHELIA}/" ./data/swag/config/nginx/snippets/authelia-authrequest.conf
-	# Set Homepage base URL
+	@bash ./.utils/message.sh info "Set Homepage base URL"
 	sed -i "s/changeme/${APP_BASEURL}/" ./data/homepage/settings.yaml
 	#
+	@bash ./.utils/message.sh info "Set Authelia base URL"
+	sed -i "s/changeme/${APP_BASEURL}/g" ./data/authelia/config/configuration.yaml
+	sed -i "s/changeme/${APP_BASEURL}/g" ./data/authelia/config/configuration.acl.yaml
+	@bash ./.utils/message.sh info "Set Authelia subdomain in 401 error redirection URL"
+	sed -i "s/changeme/${AUTHELIA}/" ./data/swag/config/nginx/snippets/authelia-authrequest.conf
+	@bash ./.utils/message.sh warn "[WARN] Checking if at least 1 Authelia user is configured"
+	grep -q "change" ./data/authelia/config/*.yaml && echo "Please create at least 1 user" && exit 1 || echo "All set!"
+	#
 	# Build the stack
-	@bash ./.utils/message.sh info "[INFO] Building the application"
+	@bash ./.utils/message.sh info "[INFO] Building the Secure proxy"
 	docker compose -f docker-compose.yml build
 	@bash ./.utils/message.sh info "[INFO] Build OK. Use make up to activate the automated proxy."
 
 .PHONY: up
 up: build
-	@bash ./.utils/message.sh info "[INFO] Building the HTTPS automated proxy"
+	@bash ./.utils/message.sh info "[INFO] Bringing up the secure proxy"
 	docker compose up -d --remove-orphans
 	@make urls
+
+.PHONY: authelia-hash
+authelia-hash:
+	@bash ./.utils/message.sh info "[INFO] Hash a password in Argon2 for Authelia"
+	read -p "Password: " PASSWORD
+	docker run authelia/authelia:latest authelia hash-password ${PASSWORD} 
+	@echo ""
+	@bash ./.utils/message.sh info "[INFO] You can now use it for any user in "
+	@bash ./.utils/message.sh link "./data/authelia/config/users_database.yml"
 
 .PHONY: hard-cleanup
 hard-cleanup:
@@ -66,6 +82,7 @@ urls:
 	@bash ./.utils/message.sh link "Homepage: https://${APP_BASEURL}/"
 	@bash ./.utils/message.sh link "Portainer docker admin GUI: https://${APP_BASEURL}/portainer"
 	@bash ./.utils/message.sh link "Authelia portal: https://${AUTHELIA}/"
+	@bash ./.utils/message.sh link "(Optional) SWAG dashboard: https://dash.${APP_BASEURL}"
 	@echo ""
 
 .PHONY: pull
