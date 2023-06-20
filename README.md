@@ -130,6 +130,51 @@ To operate, you need to :
   * Edit the new file to match your needs (e.g. `nano nextcloud.subdomain.conf`)
   * **Authelia** : if you want to secure access to this new app, please go to the [Authelia](#authelia) section to learn more.
 
+**Dashboard**
+
+This opinionated SWAG deployment comes with a pre-configured dashboard. It is based on the [SWAG Dashboard](https://github.com/linuxserver/docker-mods/tree/swag-dashboard) and [Maxmind GeoIP2 database](https://github.com/linuxserver/docker-mods/tree/swag-maxmind) docker mods.
+
+To operate, you need to :
+1. In the `.env_swag-variables` file : 
+  * Uncomment the `DOCKER_MODS` variable
+  * Replace `<licence-key>` with your [Maxmind licence key](https://www.maxmind.com/en/geolite2/signup) personal licence key 
+2. (Re)start SWAG to take the new configuration into account (e.g. `docker compose restart swag-proxy`)
+
+3. Add the following line to `/config/nginx/nginx.conf` under the `http` section:
+   
+   ```nginx
+   include /config/nginx/maxmind.conf;
+   ```
+4. Edit `/config/nginx/maxmind.conf` and add countries to the blocklist / whitelist according to the comments, for example:
+   
+    ```nginx
+    map $geoip2_data_country_iso_code $geo-whitelist {
+        default no;
+        GB yes;
+    }
+
+    map $geoip2_data_country_iso_code $geo-blacklist {
+        default yes;
+        US no;
+    }
+    ```
+5. Use the definitions in the following way:
+   ```nginx
+    server {
+        listen 443 ssl;
+        listen [::]:443 ssl;
+
+        server_name some-app.*;
+        include /config/nginx/ssl.conf;
+        client_max_body_size 0;
+
+        if ($lan-ip = yes) { set $geo-whitelist yes; }
+        if ($geo-whitelist = no) { return 404; }
+
+        location / {
+    ```
+6. Restart the container to apply the changes.
+
 ### Authelia
 | ▲ [Top](#https-secure-reverse-proxy) |
 | --- |
