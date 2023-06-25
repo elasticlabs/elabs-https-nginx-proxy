@@ -9,7 +9,7 @@ An opinionated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS revers
   <img src="https://raw.githubusercontent.com/elasticlabs/elabs-https-nginx-proxy/main/Architecture.png" alt="Elastic Labs secure HTTPS proxy" height="400px">
 </p>
 
-<p>
+
 ** Table Of Contents **
   - [Preparation steps](#preparation-steps)
     - [DNS configuration](#dns-configuration)
