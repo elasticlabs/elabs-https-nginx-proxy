@@ -3,8 +3,9 @@
 ###############################################################
 
 # This secret can also be set using the env variables AUTHELIA_JWT_SECRET_FILE
+# Please tweak and modify some symbol to fit your needs.
 jwt_secret: A4gYb7QFpbfKaNWAX7P7FX5y00*
-default_redirection_url: https://labo.elasticlabs.co
+default_redirection_url: https://changeme
 
 server:
   host: 0.0.0.0
@@ -18,10 +19,10 @@ log:
   #issuer: authelia.com
 
 duo_api:
-  hostname: api-771dbc4a.duosecurity.com
-  integration_key: DI0KXOC3QGJJQRTTYJ3H
+  hostname: <api-domain>.duosecurity.com
+  integration_key: <integration_key>
   # This secret can also be set using the env variables AUTHELIA_DUO_API_SECRET_KEY_FILE
-  secret_key: 1ateHGsxn89eJcsiIJVeXjjg7IjXA155EoWxfV9J
+  secret_key: <secret_key>
   enable_self_enrollment: true
 
 authentication_backend:
@@ -32,13 +33,11 @@ access_control:
   default_policy: deny
   rules:
     # Rules applied to everyone
-    - domain: elasticlabs.co
+    - domain: changeme
       policy: bypass
-    - domain: labo.elasticlabs.co
+    - domain: auth.changeme
       policy: two_factor
-    - domain: auth.elasticlabs.co
-      policy: two_factor
-    - domain: dash.elasticlabs.co
+    - domain: dash.changeme
       policy: two_factor
 
 session:
@@ -46,7 +45,7 @@ session:
   secret: unsecure_session_secret
     #cookies:
     #- name: authelia_session
-  domain: elasticlabs.co  # Should match whatever your root protected domain is
+  domain: changeme  # Should match whatever your root protected domain is
     #  expiration: 3600  # 1 hour
     #  inactivity: 300  # 5 minutes
 

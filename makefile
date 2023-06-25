@@ -38,6 +38,8 @@ build:
 	@bash ./.utils/message.sh info "Set Homepage base URL"
 	sed -i "s/changeme/${APP_BASEURL}/" ./data/homepage/settings.yaml
 	#
+	# TODO : cover all replacements of domain name in Authelia and SWAG config files
+	#
 	#@bash ./.utils/message.sh info "Set Authelia base URL"
 	#sed -i "s/changeme/${APP_BASEURL}/g" ./data/authelia/config/configuration.yaml
 	#sed -i "s/changeme/${APP_BASEDOMAIN}/g" ./data/authelia/config/configuration.acl.yaml
