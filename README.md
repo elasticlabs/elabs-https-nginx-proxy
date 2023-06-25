@@ -6,7 +6,11 @@ An opinionated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS revers
   - [Homepage](https://github.com/benphelps/homepage/) for your deployments... well... Homepage :-)
 
 <p>
-**Table Of Contents:**
+  <img src="https://raw.githubusercontent.com/elasticlabs/elabs-https-nginx-proxy/main/Architecture.png" alt="Elastic Labs secure HTTPS proxy" height="400px">
+</p>
+
+<p>
+** Table Of Contents **
   - [Preparation steps](#preparation-steps)
     - [DNS configuration](#dns-configuration)
     - [Stack preparation](#stack-preparation)
@@ -16,6 +20,7 @@ An opinionated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS revers
     - [Homepage](#homepage)
     - [SWAG](#swag)
     - [Authelia](#authelia)
+
 
 ----  
 
@@ -75,25 +80,17 @@ elabs-secure-proxy_swag-entrypoint  | Server ready
 | ▲ [Top](#https-secure-reverse-proxy) |
 | --- |
 
-After deploying the initial stack, comes real life! The following section describes what your get and how you can get and do more immediately after the first deployment.
+The following section describes what your get after a successful automated depoyment and how you can refine or complement the default configuratino to better fit your needs, create accounts, and secure the whole deployment.
 
 ### Portainer 
 After deployment you have `5 minutes` to setup an `administrative user accomunt` in the Portain GUI.
 * If you fail to do it and access portainer, you'll be redirected to a `timeout.html` page.
 * When this happen, simply restart Portainer : `docker compose restart portainer`, then create this 1st account. The tool is ready.
-
-**Authelia**
-
-Once Authelia is configured and tested OK on the server homepage, you can use it to secure access to your `Portainer` deployment.
-Please go to the [Authelia](#authelia) section to learn more.
+* **Authelia** : Once ready to secure your server, please go to the [Authelia](#authelia) section to learn more.
 
 ### Homepage
-| ▲ [Top](#https-secure-reverse-proxy) |
-| --- |
-
 This secure gateway comes with a simple and fancy pre-configured `server homepage`. 
-I chose [Homepage](https://github.com/benphelps/homepage/) over others for its simplicity and its ability to be easily customized.
-Built with [Vue.js](https://vuejs.org/), [Bulma](https://bulma.io/) and [Buefy](https://buefy.org/), Homepage is a single page application (SPA) that you can host on your own server. It provides a quick way for you to access your favorites websites. It is meant to be fully customizable to suit your needs.
+I chose [Homepage](https://github.com/benphelps/homepage/) over others for its simplicity and its ability to be easily customized. It is static, and meant to be fully customizable to tailor your needs.
 
 **Configuration**
 
@@ -102,45 +99,36 @@ Built with [Vue.js](https://vuejs.org/), [Bulma](https://bulma.io/) and [Buefy](
   * `services.yml` : where you can [manually or automatically add your dockerized services](https://gethomepage.dev/en/configs/services/)
   * `settings.yml` : to customize its behaviour
   * `widgets.yml` : where you can add fancy and useful widgets to your homepage. Please go there to learn more!
-
-**Authelia**
-
-Once Authelia is configured and tested OK on the server homepage, you can use it to secure access to your `Homepage` deployment.
-Please go to the [Authelia](#authelia) section to learn more.
+* **Authelia** : Once ready to secure your server, please go to the [Authelia](#authelia) section to learn more.
 
 ### SWAG
-| ▲ [Top](#https-secure-reverse-proxy) |
-| --- |
-
-The goal of this section is to give you ideas on how to get started with the LinuxServer SWAG. We will explain some of the basic concepts and limitations, and provide you with common examples. 
-
 Big idea short : when thinking about deplying a new stack, you have 2 major choices to make :
-* Either you want your stuff to live in a subfolder of your domain (e.g. `https://your-domain.ltd/your-app/`)
-* Or you want your stuff to live in a subdomain of your domain (e.g. `https://your-app.your-domain.ltd/`)
+* Either you want your stuff to live in a **subfolder** (e.g. `https://example.com/your-app/`)
+* Or you want your stuff to live in a **subdomain** of your domain (e.g. `https://your-app.example.com/`)
 
 **Subfolder**
 
-SWAG comes with tons of sample configuration files matching most common COTS on the market. You can find them in the `/config/nginx/proxy-confs/` folder. Please visit the [SWAG reverse proxy documentation](https://github.com/linuxserver/reverse-proxy-confs) to learn more.
+SWAG comes with many sample configuration files matching most common COTS on the market. You can find them in the `/config/nginx/proxy-confs/` folder. Please visit the [SWAG reverse proxy documentation](https://github.com/linuxserver/reverse-proxy-confs) to learn more.
 
 These configuration files follow a simple naming convention : `<app-name>.subfolder.conf.sample`.
 During startup, SWAG will automatically load all the `<app-name>.subfolder.conf` files and aggregate their `location` blocks to the `default.conf`live nginx file.
 * Therefore, in this case you only act on the `location` blocks.
 
 To operate, you need to :
-* Copy the sample file to a new file without the `.sample` extension (e.g. `cp nextcloud.subfolder.conf.sample nextcloud.subfolder.conf`)
-  * You can also move the file to the `./data/swag/config/nginx/proxy-confs/` folder to keep things clean and tidy.
+* Move the sample file to a new file without the `.sample` extension (e.g. `cp nextcloud.subfolder.conf.sample nextcloud.subfolder.conf`)
+  * You can also move the file to the `./data/swag/config/nginx/proxy-confs/` **build folder** to keep things clean and tidy (the gitignore file doesn't track the `*.sample` files).
   * Edit the new file to match your needs (e.g. `nano nextcloud.subfolder.conf`)
   * **Authelia** : if you want to secure access to this new app, please go to the [Authelia](#authelia) section to learn more.
 * Restart SWAG to take the new configuration into account (e.g. `docker compose restart swag`)
 
 **Subdomain**
 
-This time, you need to create full `server` blocks for a given subdomain.
-Again, you can find sample config files in the `/config/nginx/proxy-confs/` folder. Please visit the [SWAG reverse proxy documentation](https://github.com/linuxserver/reverse-proxy-confs) to learn more.
+In that case, you need to create full `server` blocks for a given subdomain.
+Again, you can find sample config files in the `/config/nginx/proxy-confs/` swag-proxy container folder. Please visit the [SWAG reverse proxy documentation](https://github.com/linuxserver/reverse-proxy-confs) to learn more.
 
 To operate, you need to :
 * Copy the sample file to a new file without the `.sample` extension (e.g. `cp nextcloud.subdomain.conf.sample nextcloud.subdomain.conf`)
-  * You can also move the file to the `./data/swag/config/nginx/site-confs/` folder to keep things clean and tidy.
+  * You can also move the file to the `./data/swag/config/nginx/site-confs/` **build folder** to keep things clean and tidy (the gitignore file doesn't track the `*.sample` files).
   * Edit the new file to match your needs (e.g. `nano nextcloud.subdomain.conf`)
   * **Authelia** : if you want to secure access to this new app, please go to the [Authelia](#authelia) section to learn more.
 
@@ -149,21 +137,17 @@ To operate, you need to :
 This opinionated SWAG deployment comes with a pre-configured dashboard. It is based on the [SWAG Dashboard](https://github.com/linuxserver/docker-mods/tree/swag-dashboard) and [Maxmind GeoIP2 database](https://github.com/linuxserver/docker-mods/tree/swag-maxmind) docker mods.
 
 To operate, you need to :
-1. In the `.env_swag-variables` file : 
+1. (skip if already done during the preparation steps) In the `.env_swag-variables` file : 
   * Uncomment the `DOCKER_MODS` variable
   * Replace `<licence-key>` with your [Maxmind licence key](https://www.maxmind.com/en/geolite2/signup) personal licence key 
 
-2. Rename the `./data/swag/config/nginx/site-confs/dash.subdomain.conf.sample` file to `./data/swag/config/nginx/site-confs/dash.subdomain.conf`
-Please ensure that the `server_name` directive matches your choosen subdomain (e.g. `dash.your-domain.ltd`) and that a matching DNS records exists. 
-
-3. (Re)start SWAG to take the new configuration into account (e.g. `docker compose restart swag-proxy`)
-
-4. Add the following line to `/config/nginx/nginx.conf` under the `http` section:
+2. Add the following line to `/config/nginx/nginx.conf` under the `http` section:
    
    ```nginx
    include /config/nginx/maxmind.conf;
    ```
-5. Edit `/config/nginx/maxmind.conf` and add countries to the blocklist / whitelist according to the comments, for example:
+
+3. Edit `/config/nginx/maxmind.conf` and add countries to the blocklist / whitelist according to the comments, for example:
    
     ```nginx
     map $geoip2_data_country_iso_code $geo-whitelist {
@@ -176,7 +160,8 @@ Please ensure that the `server_name` directive matches your choosen subdomain (e
         US no;
     }
     ```
-6. Use the definitions in the following way:
+
+4. Use the definitions in the following way for any application you may restrict to specific GeoIP2 countries:
    ```nginx
     server {
         listen 443 ssl;
@@ -191,7 +176,10 @@ Please ensure that the `server_name` directive matches your choosen subdomain (e
 
         location / {
     ```
-7. Restart the container to apply the changes.
+
+4. (Re)start SWAG to take the new configuration into account (e.g. `docker compose restart swag-proxy`)
+
+5. Access the dashboard through `https://dash.example.com/` URL
 
 ### Authelia
 | ▲ [Top](#https-secure-reverse-proxy) |
