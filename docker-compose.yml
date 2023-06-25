@@ -2,7 +2,7 @@ version: '3.8'
 services:
   #
   # We begin with the reverse proxy stack
-  # reference : 
+  # reference :
   swag-proxy:
     image: lscr.io/linuxserver/swag
     container_name: ${COMPOSE_PROJECT_NAME}_swag-entrypoint
@@ -14,40 +14,37 @@ services:
       - ${PWD}/data/swag/config:/config
       # Uncomment the following line to push to name based volumes for production
       # swag-config:/config
-      - certs:/etc/letsencrypt/
+      #- certs:/etc/letsencrypt/
     env_file:
       - .env_swag-variables
     environment:
       - URL=${VIRTUAL_HOST}
       - EMAIL=${CERTBOT_EMAIL}
+      #- STAGING=true
       # Uncomment if you're deploying on a main domain to activate subdomains like :
-      #- SUBDOMAINS=www,ftp,cloud 
+      - SUBDOMAINS=${SUBDOMAINS}
+      - ONLY_SUBDOMAINS=true
     cap_add:
       - NET_ADMIN
     networks:
       - revproxy_admin
       - revproxy_apps
+
   #
   # Now comes the Authelia container
   authelia:
     container_name: ${COMPOSE_PROJECT_NAME}_authelia
     image: authelia/authelia
     restart: unless-stopped
-    command: 
-      - "authelia" 
-      - "--config /config/configuration.yaml"
-      - "--config /config/configuration.acl.yaml"
-
     expose:
       - 9091
     volumes:
       - ${PWD}/data/authelia/config:/config
       # Uncomment the following line to push to name based volumes for production
       # authelia-config:/config
-    environment:
-      TZ: 'Australia/Melbourne'
     networks:
       - revproxy_admin
+
   # Redis image for Authelia
   # https://www.authelia.com/configuration/session/redis/
   authelia_redis:
@@ -58,12 +55,10 @@ services:
       - 6379
     volumes:
       - redis:/data
-    environment:
-      - TZ=America/Chicago
     networks:
       - revproxy_admin
 
-  # 
+  #
   # Now comes the admin services stack
   portainer:
     image: portainer/portainer-ce:latest
@@ -81,6 +76,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - revproxy_admin
+
   #
   # Server monitoring
   homepage:

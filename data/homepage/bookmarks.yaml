@@ -9,10 +9,10 @@
         - icon: github.png
           href: https://github.com/elasticlabs
     - OneNote: 
-        - icon: onenote.png
+        - abbr: ON
           href: https://www.microsoft365.com/launch/onenote
     - MSTeams: 
-        - icon: msteams.png
+        - abbr: TS
           href: https://teams.microsoft.com/
     - Netlify:
         - icon: netlify.png
@@ -23,12 +23,12 @@
         - icon: twitter.png
           href: https://twitter.com/
     - Tweetdeck:
-        - icon: tweetdeck.png
+        - icon: twitter.png
           href: https://tweetdeck.twitter.com/
 
 - Entertainment:
     - YouTube:
-        - abbr: YT
+        - icon: youtube.png
           href: https://youtube.com/
     - JetPunk: 
         - abbr: JP

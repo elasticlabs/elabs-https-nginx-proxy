@@ -1,7 +1,7 @@
 title: Elastic Labs dev server homepage
 theme: dark # or light
 color: slate
-# Supported colors are: slate, gray, zinc, neutral, stone, amber, yellow, lime, green, 
+# Supported colors are: slate, gray, zinc, neutral, stone, amber, yellow, lime, green,
 #emerald, teal, cyan, sky, blue, indigo, violet, purple, fuchsia, pink, rose, red, white
 iconStyle: theme # optional, defaults to gradient
 headerStyle: boxed # or clean

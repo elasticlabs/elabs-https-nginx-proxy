@@ -1,61 +1,78 @@
 # HTTPS Secure reverse proxy
-Automated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS reverse application proxy for your dockerized software stacks! THis stack is based on the following excellent building blocks : 
-  - Secure Web Application Gateway (SWAG) for NGinx off-the-shelf gateway full of best practices
-  - Authelia for securing access to your applications
-  - Portainer for daily docker monitoring
-  - [Homepage](https://github.com/benphelps/homepage/) for your deployment go-to... well... Homepage :-)
+An opinionated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS reverse application proxy for your dockerized software stacks! This stack implements the following building blocks : 
+  - [Secure Web Application Gateway (SWAG)](https://www.linuxserver.io/blog/2020-08-21-introducing-swag) for Nginx best practice gateway + certbot + fail2ban + goaccess
+  - [Authelia](https://www.authelia.com/integration/proxies/swag/) with built-in elegant 2FA for secure access to your apps
+  - [Portainer CE](https://www.portainer.io/) for daily docker monitoring
+  - [Homepage](https://github.com/benphelps/homepage/) for your deployments... well... Homepage :-)
 
 <p>
+  <img src="https://raw.githubusercontent.com/elasticlabs/elabs-https-nginx-proxy/main/Architecture.png" alt="Elasticlabs Secure Proxy architecture" height="400px">
+</p>
+
 **Table Of Contents:**
-  - [Docker environment preparation](#docker-environment-preparation)
-  - [Nginx HTTPS Proxy preparation](#nginx-https-proxy-preparation)
-  - [Stack deployment and management](#stack-deployment-and-management)
+  - [Preparation steps](#preparation-steps)
+    - [DNS configuration](#dns-configuration)
+    - [Stack preparation](#stack-preparation)
+  - [Stack initial deployment](#stack-initial-deployment)
   - [Post-Install configuration](#post-install-configuration)
     - [Portainer](#portainer)
     - [Homepage](#homepage)
     - [SWAG](#swag)
     - [Authelia](#authelia)
 
-
 ----  
 
-## Docker environment preparation
-* Install utility tools: `# yum install git nano make htop elinks wget tshark nano tree`
-* Double-check that you properly followed [docker post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/)
-* Install the [latest version of docker-compose](https://docs.docker.com/compose/install/)
+## Preparation steps
+Please 1st ensure that you deployed a fresh docker + compose environment on your server. If not, please follow the [docker installation guide](https://docs.docker.com/engine/install/) and the [docker-compose installation guide](https://docs.docker.com/compose/install/). Dont forget to follow the [post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/) to ensure your docker environment is properly configured. 
 
-## Secure Application Proxy preparation
-| ▲ [Top](#https-secure-reverse-proxy) |
-| --- |
-
-* Carefully create / choose an appropriate directory to group your applications GIT reposities (e.g. `~/AppContainers/`)
-* Choose & configure a selected DNS name (e.g. `portainer.your-domain.ltd`). Make sure it properly resolves from your server using `nslookup`commands
+* Install utility tools: `# yum install git nano make htop wget tshark nano tree`
+* Carefully create / choose an appropriate directory to group your stacks GIT reposities (e.g. `~/AppContainers/`)
 * GIT clone this repository `git clone https://github.com/elasticlabs/https-nginx-proxy-docker-compose.git`
 
-**Configuration**
+### DNS configuration
+To successfully implement this solution, you'll need to ensure that the following DNS records are existing and properly pointing towards your server's IP address (replace `example.com` with your own domain name). Ensure those properly resolve from your server using `nslookup`commands
 
-* **Rename `.env-changeme` file into `.env`** to ensure `docker-compose` gets its environement correctly.
-* Modify the following variables in `.env-changeme` file :
-  * `VIRTUAL_HOST=` : replace `your-domain.ltd` with your choosen subdomain for homepage (e.g. example.com).
-  * `CERTBOT_EMAIL=` : replace `email@mail-provider.ltd` with the email address to get notifications on Certificates issues for your domain. 
-  * `AUTHELIA_SUBDOMAIN=` : replace `auth.your-domain.ltd` with your choosen subdomain for Authelia (e.g. auth.example.com)
+| Tool | Record | description |
+|---|---|---|
+| Homepage | `example.com` | Your server homepage URL. Portainer will be accessed through `example.com/portainer` URL |
+| Authelia | `auth.example.com` | Your Authelia URL. Authelia API will be accessed through `auth.example.com/api` URL |
+| SWAG Dashboard | `dash.example.com` | Your SWAG Dashboard (GoAccess) URL |
 
-## Stack deployment and management
+### Stack preparation
+This stack is composed of 4 main services : SWAG, Authelia, Portainer and Homepage. Therefore, preparing the deployment has to follow a progressive order to complete successfully.
+
+| Tool | Steps |
+|---|---|
+| Docker Compose | * Rename `.env-changeme` file into `.env` to ensure `docker compose` sets its environement correctly.<br>* Modify the following variables in `.env` file :<br>  * `VIRTUAL_HOST=` : replace `example.com` with your homepage domain name (usually ROOT domain).<br>  * `CERTBOT_EMAIL=` : used for let'sencrypt account.<br>  * `SUBDOMAINS`=auth,dash.<br>  * `AUTHELIA_SUBDOMAIN`=auth.example.com.<br>  * `TZ`=Europe/Paris by your timezone. |
+| SWAG | * Rename `.env_swag-variables-changeme` file into `.env_swag-variables` to ensure `docker compose` sets its environement correctly.<br>* Modify the following variables in `.env_swag-variables` file :<br>  * `TZ`=Europe/Paris by your timezone.<br>  * `MAXMINDDB_LICENSE_KEY=` : replace `<license-key>` with your [Maxmind licence key](https://www.maxmind.com/en/geolite2/signup) personal licence key.<br>  * `DOCKER_MODS=` : uncomment this line to use SWAG Dashboard + Maxmind GeoIP2 database. |
+| Authelia | Apart from the `AUTHELIA_SUBDOMAIN` variable in the `.env` file, it's not recommanded to setup and run Authelia immediately at this step. Please make the whole stack work before enabling security. When ready, please navigate to [Authelia](#authelia) |
+| Homepage | No need to change anything in the configuration of Homepage for now, the makefile gets you covered! | 
+
+
+## Stack initial deployment
 | ▲ [Top](#https-secure-reverse-proxy) |
 | --- |
 
-**Deployment**
-
+A lot of work has been done to make the deployment of this stack as easy as possible. The following section describes how to deploy the stack and how to use it. It is based on the `Makefile` and following operators : 
 * Get help : `make`
-* Bring up the whole stack : `make up`
-  * If all goes well from the `make up` set of commands point of view, the available URLs are listed at the end of the process.
-  * You can now begin to use the gateway. Enjoy!!
+* `make up` : brings up the whole stack. `up` always triggers a `make build` before, so you don't have to worry about it.
+* `make build` : (Optional) checks that everythings's OK then builds the stack images.
+* `make hard-cleanup` : /!\ Remove images, containers, networks, volumes & data
 
-**Useful management commands**
+<p>
+If all runs well, you should check for services status, especially SWAG with the following command : `docker compose logs swag-proxy`. Especially, negociating the certificates creation with Let's Encrypt can take a while. Please be patient. Once SWAG becomes ready, you should see something like this :
 
-* Go inside a container : `docker compose exec <service-id> /bin/bash` or `/bin/sh`
-* See logs of a container: `docker compose logs <service-id>`
-* Monitor containers : `docker compose stats` or... use portainer!
+```bash	
+elabs-secure-proxy_swag-entrypoint  | Server ready
+```
+
+* `make logs` : shows the logs of the whole stack
+* `make logs-<service-id>` : shows the logs of a specific service (double-tab to list available services)
+* `make exec-<service-id>` : opens a shell inside a specific service container
+* `make ps` : shows the status of the whole stack
+* `make ps-<service-id>` : shows the status of a specific service
+* `make update` : (Optional) updates the stack images.
+
 
 ## Post-Install configuration
 | ▲ [Top](#https-secure-reverse-proxy) |
