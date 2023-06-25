@@ -10,7 +10,7 @@ An opinionated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS revers
 </p>
 
 
-** Table Of Contents **
+**Table Of Contents**
   - [Preparation steps](#preparation-steps)
     - [DNS configuration](#dns-configuration)
     - [Stack preparation](#stack-preparation)
