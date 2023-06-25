@@ -7,6 +7,7 @@ Automated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS reverse app
 
 <p>
 **Table Of Contents:**
+  
   - [Docker environment preparation](#docker-environment-preparation)
   - [Nginx HTTPS Proxy preparation](#nginx-https-proxy-preparation)
   - [Stack deployment and management](#stack-deployment-and-management)
