@@ -6,7 +6,7 @@ An opinionated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS revers
   - [Homepage](https://github.com/benphelps/homepage/) for your deployments... well... Homepage :-)
 
 <p>
-  <img src="https://raw.githubusercontent.com/elasticlabs/elabs-https-nginx-proxy/main/Architecture.png" alt="Elastic Labs secure HTTPS proxy" height="400px">
+  <img src="https://raw.githubusercontent.com/elasticlabs/elabs-https-nginx-proxy/main/.utils/Architecture.png" alt="Elastic Labs secure HTTPS proxy" height="400px">
 </p>
 
 
@@ -67,13 +67,12 @@ If all runs well, you should check for services status, especially SWAG with the
 ```bash	
 elabs-secure-proxy_swag-entrypoint  | Server ready
 ```
-
-* `make logs` : shows the logs of the whole stack
-* `make logs-<service-id>` : shows the logs of a specific service (double-tab to list available services)
-* `make exec-<service-id>` : opens a shell inside a specific service container
-* `make ps` : shows the status of the whole stack
-* `make ps-<service-id>` : shows the status of a specific service
+Additionnal commands are available to help you manage your stack :
 * `make update` : (Optional) updates the stack images.
+* `docker compose logs <service-id>` : shows the logs of a specific service (double-tab to list available services)
+* `docker compose exec <service-id> /bin/bash` : opens a shell inside a specific service container
+* `docker compose ps` : shows the status of the whole stack
+* `docker compose ps <service-id>` : shows the status of a specific service
 
 
 ## Post-Install configuration
@@ -185,4 +184,48 @@ To operate, you need to :
 | ▲ [Top](#https-secure-reverse-proxy) |
 | --- |
 
-This section will be filled soon. Please be patient. ;-)
+During the stack preparation steps, the following files should be initialized with the authelia domain name :
+* `.env` : `AUTHELIA_SUBDOMAIN` variable sets the Authelia domain name
+* `./data/authelia/configuration.yml.changeme` : lots of variables matching Authelia and other tools domain names should be initialized 
+* `./data/swag/config/nginx/snippets/authelia-authrequest.conf` : the `error_page` variable should be initialized with the Authelia domain name
+* `./data/swag/config/nginx/proxy-confs/*.conf` and `./data/swag/config/nginx/site-confs/*.conf` : Authelia related lines are commented out. Uncomment them to enable Authelia authentication for a given app, in the following steps.
+
+**Initial configuration**
+
+First of all, move the `./data/authelia/configuration.yml.changeme` file to `./data/authelia/configuration.yml` to enable your own custom authelia configuration. The `.gitignore` file is set to ignore production related files. In this section, we'll focus on setting the 2FA authentication to work on its own before enabling it for the whole stack.
+
+The `./data/authelia/configuration.yml` configuration file is provided as a working kickstarter. Please modify the following sections :
+
+| Topic | Section | description |
+|---|---|---|
+| Keys |   * `jwt_secret`.<br>  * Session `secret`. <br>  * Storage `encryption_key` | Please modify some symbols and generate new hardened keys to strenghen your stack security |
+| 2FA with Duo API | `duo_api` | Please follow the [Duo API Authelia docs](https://www.authelia.com/configuration/second-factor/duo/) to create your own API credentials and fill that block, then uncomment  |
+| SMTP | `smtp` | Please follow the [SMTP Authelia docs](https://www.authelia.com/configuration/authentication/smtp/) to create your own SMTP credentials and fill that block, then uncomment  |
+
+**Testing**
+
+Once Authelia configuration is ready, you can start the service with `docker compose up -d --build authelia`. You can then check if the service is running using the following command : `docker compose logs authelia`. If everything is OK, you should see something like this :
+
+```bash
+elabs-secure-proxy_authelia  | time="2023-06-22T20:15:36Z" level=info msg="Authelia v4.37.5 is starting"
+elabs-secure-proxy_authelia  | time="2023-06-22T20:15:36Z" level=info msg="Log severity set to info"
+elabs-secure-proxy_authelia  | time="2023-06-22T20:15:36Z" level=info msg="Storage schema is being checked for updates"
+elabs-secure-proxy_authelia  | time="2023-06-22T20:15:36Z" level=info msg="Storage schema is already up to date"
+elabs-secure-proxy_authelia  | time="2023-06-22T20:15:37Z" level=info msg="Initializing server for non-TLS connections on '[::]:9091' path '/'"
+```
+
+You can then access the Authelia dashboard through `https://auth.example.com/` URL. You should be able to login with the `authelia` account and the `authelia` password, then Duo mobile push. If you can't, please check the logs and the configuration file.
+
+**Enabling Authelia for a given app**
+
+At first, enabling Authelia can feel counter-intuitive (you need to include Authelia `location` files in the `server` blocks, then include the `authrequest` files in the location blocks). Please follow the following steps to enable Authelia for our stack. The underlying logic will remain the same for future needs :
+
+| App | Subfolder | Subdomain |
+|---|---|---|
+| Homepage | ROOT `/` subdomain | In `./data/swag/config/nginx/site-confs/default.conf` uncomment the `include` line related to Authelia in the `server` block, then <br> in `./data/swag/config/nginx/proxy-confs/homepage.subfolder.conf` uncomment the `include` line in the `location` block to activate the captive portal |
+| Portainer | ROOT `/portainer` subfolder | In `./data/swag/config/nginx/proxy-confs/portainer.subfolder.conf` uncomment the `include` line in the `location` block to activate the captive portal | 
+| SWAG Dashboard | `dash.example.com` subdomain | In `./data/swag/config/nginx/proxy-confs/dashboard.subdomain.conf` uncomment the `include` line for Authelia in the `location` block to activate the captive portal |
+
+**Authelia ACLs**
+
+Authelia ACLs are defined in the `./data/authelia/config/configuration.yml` file. ACL are pre-filled for this stack basic apps. Please follow the [Authelia ACLs documentation](https://www.authelia.com/configuration/access-control/) to learn more.

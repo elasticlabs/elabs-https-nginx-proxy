@@ -36,15 +36,13 @@ build:
 	docker network inspect ${ADMIN_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${ADMIN_NETWORK}
 	#
 	@bash ./.utils/message.sh info "Set Homepage base URL"
-	sed -i "s/changeme/${APP_BASEURL}/" ./data/homepage/settings.yaml
+	sed -i "s/changeme/${APP_BASEURL}/g" ./data/homepage/settings.yaml
+	sed -i "s/changeme/${APP_BASEURL}/g" ./data/homepage/services.yaml
 	#
-	# TODO : cover all replacements of domain name in Authelia and SWAG config files
-	#
-	#@bash ./.utils/message.sh info "Set Authelia base URL"
-	#sed -i "s/changeme/${APP_BASEURL}/g" ./data/authelia/config/configuration.yaml
-	#sed -i "s/changeme/${APP_BASEDOMAIN}/g" ./data/authelia/config/configuration.acl.yaml
-	#@bash ./.utils/message.sh info "Set Authelia subdomain in 401 error redirection URL"
-	#sed -i "s/changeme/${AUTHELIA}/" ./data/swag/config/nginx/snippets/authelia-authrequest.conf
+	@bash ./.utils/message.sh info "Set Authelia base URL"
+	sed -i "s/changeme/${AUTHELIA}/g" ./data/authelia/config/configuration.yml
+	sed -i "s/changeme/${AUTHELIA}/g" ./data/swag/config/nginx/snippets/authelia-authrequest.conf
+	sed -i "s/authchangeme/${AUTHELIA}/g" ./data/homepage/config/services.yaml
 	#
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the Secure proxy"

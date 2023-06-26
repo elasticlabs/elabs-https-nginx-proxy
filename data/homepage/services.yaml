@@ -7,10 +7,10 @@
 - Administration:
     - Portainer:
         icon: portainer-alt.png
-        href: https://labo.elasticlabs.co/portainer/
+        href: https://changeme/portainer/
         description: Portainer docker stack management interface
         # (Optional) ping : works by sending a HTTP HEAD request to the server
-        ping: https://labo.elasticlabs.co/portainer/
+        ping: https://changeme/portainer/
         # (Optional) Docker server and container
         # Please note that the docker.yaml file must be present in the same folder as the settings.yaml file
         # and contain the docker server name definition
@@ -20,16 +20,16 @@
         #  In order to generate an API key, please follow the steps outlined here https://docs.portainer.io/api/access.html
         #widget:
         #    type: portainer
-        #    url: https://labo.elasticlabs.co/portainer/
+        #    url: https://changeme/portainer/
         #    env: 1
         #    key: <paste_key_here>
 
     - SWAG Dashboard:
         icon: goaccess.png
-        href: https://dash.elasticlabs.co/
+        href: https://dash.changeme/
         description: SWAG reverse proxy monitoring dashboard
         # (Optional) ping : works by sending a HTTP HEAD request to the server
-        ping: https://dash.elasticlabs.co/
+        ping: https://dash.changeme/
         # (Optional) Docker server and container
         # Please note that the docker.yaml file must be present in the same folder as the settings.yaml file
         # and contain the docker server name definition
@@ -38,16 +38,16 @@
         # (Optional) Widget (see below)
         #widget:
         #    type: swag
-        #    url: https://dash.elasticlabs.co/
+        #    url: https://dash.changeme/
         #    env: 1
         #    key: <paste_key_here>
 
     - Authelia:
         icon: authelia.png
-        href: https://auth.elasticlabs.co/
+        href: https://authchangeme/
         description: RBAS authentication portal
         # (Optional) ping : works by sending a HTTP HEAD request to the server
-        ping: https://auth.elasticlabs.co
+        ping: https://authchangeme
         # (Optional) Docker server and container
         # Please note that the docker.yaml file must be present in the same folder as the settings.yaml file
         # and contain the docker server name definition
@@ -56,10 +56,10 @@
 
     #- Authentik:
     #    icon: authentik.png
-    #    href: https://auth.elasticlabs.co/
+    #    href: https://authchangeme/
     #    description: RBAS authentication portal
         # (Optional) ping : works by sending a HTTP HEAD request to the server
-    #    ping: https://auth.elasticlabs.co
+    #    ping: https://authchangeme
         # (Optional) Docker server and container
         # Please note that the docker.yaml file must be present in the same folder as the settings.yaml file
         # and contain the docker server name definition
@@ -68,5 +68,5 @@
         # (Optional) Widget (see below)
         #widget:
         #    type: authentik
-        #    url: https://auth.elasticlabs.co
+        #    url: https://authchangeme
         #    key: <paste_api_token>

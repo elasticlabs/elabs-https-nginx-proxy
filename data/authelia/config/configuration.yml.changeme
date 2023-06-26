@@ -18,27 +18,12 @@ log:
 #totp:
   #issuer: authelia.com
 
-duo_api:
-  hostname: <api-domain>.duosecurity.com
-  integration_key: <integration_key>
-  # This secret can also be set using the env variables AUTHELIA_DUO_API_SECRET_KEY_FILE
-  secret_key: <secret_key>
-  enable_self_enrollment: true
-
-authentication_backend:
-  file:
-    path: /config/users_database.yml
-
-access_control:
-  default_policy: deny
-  rules:
-    # Rules applied to everyone
-    - domain: changeme
-      policy: bypass
-    - domain: auth.changeme
-      policy: two_factor
-    - domain: dash.changeme
-      policy: two_factor
+#duo_api:
+#  hostname: <api-domain>.duosecurity.com
+#  integration_key: <integration_key>
+#  # This secret can also be set using the env variables AUTHELIA_DUO_API_SECRET_KEY_FILE
+#  secret_key: <secret_key>
+#  enable_self_enrollment: true
 
 session:
   # This secret can also be set using the env variables AUTHELIA_SESSION_SECRET_FILE
