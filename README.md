@@ -146,7 +146,7 @@ To operate, you need to :
    include /config/nginx/maxmind.conf;
    ```
 
-3. Edit `/config/nginx/maxmind.conf` and add countries to the blocklist / whitelist according to the comments, for example:
+3. Move `/config/nginx/maxmind.conf.sample` to `/config/nginx/maxmind.conf` and edit it to add countries to the blocklist / whitelist according to the comments, for example:
    
     ```nginx
     map $geoip2_data_country_iso_code $geo-whitelist {

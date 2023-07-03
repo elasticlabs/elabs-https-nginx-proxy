@@ -1,7 +1,47 @@
-.env
+#
+# Ignore COTS produced files
 *.sample
+data/authelia/config/data/
+data/authelia/config/db.sqlite3
+data/authelia/config/notification.txt
+data/homepage/kubernetes.yaml
+data/homepage/logs/
+data/portainer/
+data/swag/config/.donoteditthisfile.conf
+data/swag/config/.migrations
+data/swag/config/crontabs/
+data/swag/config/dns-conf/
+data/swag/config/etc/
+data/swag/config/fail2ban/
+data/swag/config/geoip2db/
+data/swag/config/keys/
+data/swag/config/log/
+data/swag/config/php/
+data/swag/config/nginx/resolver.conf
+data/swag/config/nginx/ssl.conf
+data/swag/config/nginx/worker_processes.conf
+data/swag/config/nginx/dhparams.pem
+data/swag/config/nginx/ldap-location.conf
+data/swag/config/nginx/ldap-server.conf
+data/swag/config/nginx/authentik-location.conf
+data/swag/config/nginx/authentik-server.conf
 
 #
-# Ignore production files
+# Ignore production configuration files
+
+# Compose configuration
+.env_swag-variables
+.env
+
+# Authelia configuration
 data/authelia/config/configuration.yml
+data/authelia/config/users_database.yml
+
+# SWAG configuration
+data/swag/config/nginx/authelia-location.conf
+data/swag/config/nginx/authelia-server.conf
+data/swag/config/nginx/proxy-confs/dashboard.subdomain.conf
+data/swag/config/nginx/maxmind.conf
+data/swag/config/nginx/nginx.conf
+data/swag/config/nginx/proxy.conf
 ```
