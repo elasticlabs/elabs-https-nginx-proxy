@@ -42,7 +42,7 @@ build:
 	@bash ./.utils/message.sh info "Set Authelia base URL"
 	sed -i "s/changeme/${AUTHELIA}/g" ./data/authelia/config/configuration.yml
 	sed -i "s/changeme/${AUTHELIA}/g" ./data/swag/config/nginx/snippets/authelia-authrequest.conf
-	sed -i "s/authchangeme/${AUTHELIA}/g" ./data/homepage/config/services.yaml
+	sed -i "s/authchangeme/${AUTHELIA}/g" ./data/homepage/services.yaml
 	#
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the Secure proxy"
