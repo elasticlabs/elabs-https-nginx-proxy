@@ -1,4 +1,4 @@
-# Set default no argument goal to help
+y# Set default no argument goal to help
 .DEFAULT_GOAL := help
 
 # Ensure that errors don't hide inside pipes
