@@ -11,24 +11,73 @@ services:
       - '80:80'
       - '443:443'
     volumes:
-      - ${PWD}/data/swag/config:/config
-      # Uncomment the following line to push to name based volumes for production
-      # swag-config:/config
-      #- certs:/etc/letsencrypt/
-    env_file:
-      - .env_swag-variables
+      - ${PWD}/config/swag/config:/config
     environment:
+      - PUID=1000
+      - PGID=1000
       - URL=${VIRTUAL_HOST}
       - EMAIL=${CERTBOT_EMAIL}
-      #- STAGING=true
-      # Uncomment if you're deploying on a main domain to activate subdomains like :
       - SUBDOMAINS=${SUBDOMAINS}
-      - ONLY_SUBDOMAINS=true
+      - ONLY_SUBDOMAINS=false
     cap_add:
       - NET_ADMIN
     networks:
       - revproxy_admin
       - revproxy_apps
+
+  #
+  # Admin services stack
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: ${COMPOSE_PROJECT_NAME}_portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    depends_on:
+      - swag-proxy
+    expose:
+      - "9000"
+    volumes:
+      - ${PWD}/config/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - revproxy_admin
+
+  #
+  # Server monitoring
+  homepage:
+    image: ghcr.io/benphelps/homepage:latest
+    container_name: ${COMPOSE_PROJECT_NAME}_homepage
+    restart: always
+    depends_on:
+      - swag-proxy
+    expose:
+      - "3000"
+    volumes:
+      - ${PWD}/config/homepage:/app/config
+      - html:/app/public
+    networks:
+      - revproxy_admin
+
+  #
+  # File browser
+  # See https://github.com/hurlenko/filebrowser-docker for more information
+  filebrowser:
+    image: hurlenko/filebrowser
+    container_name: ${COMPOSE_PROJECT_NAME}_filebrowser
+    restart: always
+    environment:
+      - PUID=$(id -u)
+      - PGID=$(id -g)
+      - FB_BASEURL=/data
+      # The list of avalable options can be found here : https://filebrowser.org/cli/filebrowser#options.
+    expose:
+      - "443:8080" 
+    volumes:
+      - ${PWD}/config/filebrowser/filebrowser.db:/database/filebrowser.db 
+      - ${PWD}/config/filebrowser/config:/config/
+      - ${PWD}/config/homepage:/app/config
+    networks:
+      - revproxy_admin
 
   #
   # Now comes the Authelia container
@@ -39,9 +88,7 @@ services:
     expose:
       - 9091
     volumes:
-      - ${PWD}/data/authelia/config:/config
-      # Uncomment the following line to push to name based volumes for production
-      # authelia-config:/config
+      - ${PWD}/config/authelia/config:/config
     networks:
       - revproxy_admin
 
@@ -58,49 +105,11 @@ services:
     networks:
       - revproxy_admin
 
-  #
-  # Now comes the admin services stack
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_portainer
-    command: -H unix:///var/run/docker.sock
-    restart: always
-    depends_on:
-      - swag-proxy
-    expose:
-      - "9000"
-    volumes:
-      - ${PWD}/data/portainer:/data
-      # Uncomment the following line to push to name based volumes for production
-      # portainer-data:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - revproxy_admin
-
-  #
-  # Server monitoring
-  homepage:
-    image: ghcr.io/benphelps/homepage:latest
-    container_name: ${COMPOSE_PROJECT_NAME}_homepage
-    restart: always
-    depends_on:
-      - swag-proxy
-    expose:
-      - "3000"
-    volumes:
-      - ${PWD}/data/homepage:/app/config
-      # Uncomment the following line to push to name based volumes for production
-      # homepage-config:/app/config
-      - html:/app/public
-    networks:
-      - revproxy_admin
-
 volumes:
 #  swag-config:
 #  authelia-config:
 #  portainer-data:
 #  homepage-config:
-  certs:
   html:
   redis:
 

@@ -5,7 +5,7 @@
 # This secret can also be set using the env variables AUTHELIA_JWT_SECRET_FILE
 # Please tweak and modify some symbol to fit your needs.
 jwt_secret: A4gYb7QFpbfKaNWAX7P7FX5y00*
-default_redirection_url: https://changeme
+default_redirection_url: https://auth.changeme
 
 server:
   host: 0.0.0.0

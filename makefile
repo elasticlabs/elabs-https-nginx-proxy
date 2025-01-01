@@ -9,7 +9,6 @@ SHELL         = /bin/bash
 PROJECT_NAME?=$(shell cat .env | grep -v ^\# | grep COMPOSE_PROJECT_NAME | sed 's/.*=//')
 APP_BASEURL?=$(shell cat .env | grep VIRTUAL_HOST | sed 's/.*=//')
 APP_BASEDOMAIN?=$(shell cat .env | grep VIRTUAL_HOST | sed 's/.*=// | sed 's/.*\.//')
-AUTHELIA?=$(shell cat .env | grep AUTHELIA_SUBDOMAIN | sed 's/.*=//')
 APPS_NETWORK?=$(shell cat .env | grep -v ^\# | grep APPS_NETWORK | sed 's/.*=//')
 ADMIN_NETWORK?=$(shell cat .env | grep -v ^\# | grep ADMIN_NETWORK | sed 's/.*=//')
 
@@ -36,13 +35,13 @@ build:
 	docker network inspect ${ADMIN_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${ADMIN_NETWORK}
 	#
 	@bash ./.utils/message.sh info "Set Homepage base URL"
-	sed -i "s/changeme/${APP_BASEURL}/g" ./data/homepage/settings.yaml
-	sed -i "s/changeme/${APP_BASEURL}/g" ./data/homepage/services.yaml
+	sed -i "s/changeme/${APP_BASEURL}/g" ./config/homepage/settings.yaml
+	sed -i "s/changeme/${APP_BASEURL}/g" ./config/homepage/services.yaml
 	#
 	@bash ./.utils/message.sh info "Set Authelia base URL"
-	sed -i "s/changeme/${AUTHELIA}/g" ./data/authelia/config/configuration.yml
-	sed -i "s/changeme/${AUTHELIA}/g" ./data/swag/config/nginx/snippets/authelia-authrequest.conf
-	sed -i "s/authchangeme/${AUTHELIA}/g" ./data/homepage/config/services.yaml
+	sed -i "s/changeme/${APP_BASEURL}/g" ./config/authelia/config/configuration.yml
+	sed -i "s/changeme/${APP_BASEURL}/g" ./config/swag/config/nginx/snippets/authelia-authrequest.conf
+	sed -i "s/authchangeme/${APP_BASEURL}/g" ./config/homepage/config/services.yaml
 	#
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the Secure proxy"
@@ -62,7 +61,7 @@ authelia-hash:
 	docker run authelia/authelia:latest authelia hash-password $$PASSWORD 
 	@echo ""
 	@bash ./.utils/message.sh info "[INFO] You can now use it for any user in "
-	@bash ./.utils/message.sh link "./data/authelia/config/users_database.yaml"
+	@bash ./.utils/message.sh link "./config/authelia/config/users_database.yaml"
 
 .PHONY: hard-cleanup
 hard-cleanup:
@@ -80,7 +79,7 @@ urls:
 	@bash ./.utils/message.sh headline "[INFO] You may now access your project at the following URL:"
 	@bash ./.utils/message.sh link "Homepage: https://${APP_BASEURL}/"
 	@bash ./.utils/message.sh link "Portainer docker admin GUI: https://${APP_BASEURL}/portainer"
-	#@bash ./.utils/message.sh link "Authelia portal: https://${AUTHELIA}/"
+	#@bash ./.utils/message.sh link "Authelia portal: https://${APP_BASEURL}/"
 	#@bash ./.utils/message.sh link "(Optional) SWAG dashboard: https://dash.${APP_BASEURL}"
 	@echo ""
 
