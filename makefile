@@ -35,13 +35,14 @@ build:
 	docker network inspect ${ADMIN_NETWORK} >/dev/null 2>&1 || docker network create --driver bridge ${ADMIN_NETWORK}
 	#
 	@bash ./.utils/message.sh info "Set Homepage base URL"
-	sed -i "s/changeme/${APP_BASEURL}/g" ./config/homepage/settings.yaml
-	sed -i "s/changeme/${APP_BASEURL}/g" ./config/homepage/services.yaml
+	sed -i "s/changeme/labs.${APP_BASEURL}/g" ./config/homepage/settings.yaml
+	sed -i "s/changeme/labs.${APP_BASEURL}/g" ./config/homepage/services.yaml
 	#
 	@bash ./.utils/message.sh info "Set Authelia base URL"
+	sed -i "s/redirecturl/auth.${APP_BASEURL}/g" ./config/authelia/config/configuration.yml
 	sed -i "s/changeme/${APP_BASEURL}/g" ./config/authelia/config/configuration.yml
-	sed -i "s/changeme/${APP_BASEURL}/g" ./config/swag/config/nginx/snippets/authelia-authrequest.conf
-	sed -i "s/authchangeme/${APP_BASEURL}/g" ./config/homepage/config/services.yaml
+	sed -i "s/changeme/auth.${APP_BASEURL}/g" ./config/swag/config/nginx/snippets/authelia-authrequest.conf
+	sed -i "s/authchangeme/auth.${APP_BASEURL}/g" ./config/homepage/config/services.yaml
 	#
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the Secure proxy"
@@ -79,6 +80,7 @@ urls:
 	@bash ./.utils/message.sh headline "[INFO] You may now access your project at the following URL:"
 	@bash ./.utils/message.sh link "Homepage: https://${APP_BASEURL}/"
 	@bash ./.utils/message.sh link "Portainer docker admin GUI: https://${APP_BASEURL}/portainer"
+	@bash ./.utils/message.sh link "File browser : https://${APP_BASEURL}/data"
 	#@bash ./.utils/message.sh link "Authelia portal: https://auth.${APP_BASEURL}/"
 	#@bash ./.utils/message.sh link "(Optional) SWAG dashboard: https://dash.${APP_BASEURL}"
 	@echo ""

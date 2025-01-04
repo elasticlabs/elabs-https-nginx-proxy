@@ -28,7 +28,7 @@
 
     - Authelia:
         icon: authelia.png
-        href: https://auth.changeme/
+        href: https://authchangeme/
         description: RBAS authentication portal
         # (Optional) ping : works by sending a HTTP HEAD request to the server
-        ping: https://auth.changeme
+        ping: https://authchangeme
