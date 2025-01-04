@@ -79,7 +79,7 @@ urls:
 	@bash ./.utils/message.sh headline "[INFO] You may now access your project at the following URL:"
 	@bash ./.utils/message.sh link "Homepage: https://${APP_BASEURL}/"
 	@bash ./.utils/message.sh link "Portainer docker admin GUI: https://${APP_BASEURL}/portainer"
-	#@bash ./.utils/message.sh link "Authelia portal: https://${APP_BASEURL}/"
+	#@bash ./.utils/message.sh link "Authelia portal: https://auth.${APP_BASEURL}/"
 	#@bash ./.utils/message.sh link "(Optional) SWAG dashboard: https://dash.${APP_BASEURL}"
 	@echo ""
 

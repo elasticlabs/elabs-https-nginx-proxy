@@ -12,6 +12,8 @@ services:
       - '443:443'
     volumes:
       - ${PWD}/config/swag/config:/config
+      ## Uncomment the line below if you want to use the Authelia configuration snippets.
+      #- '${PWD}/config/swag/snippets:/snippets'
     environment:
       - PUID=1000
       - PGID=1000
@@ -65,6 +67,8 @@ services:
     image: hurlenko/filebrowser
     container_name: ${COMPOSE_PROJECT_NAME}_filebrowser
     restart: always
+    depends_on:
+      - swag-proxy
     environment:
       - PUID=$(id -u)
       - PGID=$(id -g)
@@ -85,6 +89,9 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_authelia
     image: authelia/authelia
     restart: unless-stopped
+    depends_on:
+      - swag-proxy
+      - authelia_redis
     expose:
       - 9091
     volumes:
@@ -98,6 +105,8 @@ services:
     image: redis:alpine
     container_name: ${COMPOSE_PROJECT_NAME}_authelia_redis
     restart: unless-stopped
+    depends_on:
+      - swag-proxy
     expose:
       - 6379
     volumes:

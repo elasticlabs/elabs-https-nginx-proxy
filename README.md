@@ -1,16 +1,20 @@
 # HTTPS Secure reverse proxy
+
 An opinionated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS reverse application proxy for your dockerized software stacks! This stack implements the following building blocks : 
-  - [Secure Web Application Gateway (SWAG)](https://www.linuxserver.io/blog/2020-08-21-introducing-swag) for Nginx best practice gateway + certbot + fail2ban + goaccess
-  - [Authelia](https://www.authelia.com/integration/proxies/swag/) with built-in elegant 2FA for secure access to your apps
-  - [Portainer CE](https://www.portainer.io/) for daily docker monitoring
-  - [Homepage](https://github.com/benphelps/homepage/) for your deployments... well... Homepage :-)
+
+- [Secure Web Application Gateway (SWAG)](https://www.linuxserver.io/blog/2020-08-21-introducing-swag) for Nginx best practice gateway + certbot + fail2ban + goaccess
+- [Authelia](https://www.authelia.com/integration/proxies/swag/) with built-in elegant 2FA for secure access to your apps
+- [Portainer CE](https://www.portainer.io/) for daily docker monitoring
+- [Homepage](https://github.com/benphelps/homepage/) for your deployments... well... Homepage :-)
 
 <p>
   <img src="https://raw.githubusercontent.com/elasticlabs/elabs-https-nginx-proxy/main/.utils/Architecture.png" alt="Elastic Labs secure HTTPS proxy" height="400px">
 </p>
 
+## Table Of Contents
 
-**Table Of Contents**
+- [HTTPS Secure reverse proxy](#https-secure-reverse-proxy)
+  - [Table Of Contents](#table-of-contents)
   - [Preparation steps](#preparation-steps)
     - [DNS configuration](#dns-configuration)
     - [Stack preparation](#stack-preparation)
@@ -19,19 +23,19 @@ An opinionated Secure Web Application Gateway (SWAG) &amp; Authelia HTTPS revers
     - [Portainer](#portainer)
     - [Homepage](#homepage)
     - [SWAG](#swag)
-    - [Authelia](#authelia)
-
 
 ----  
 
 ## Preparation steps
+
 Please 1st ensure that you deployed a fresh docker + compose environment on your server. If not, please follow the [docker installation guide](https://docs.docker.com/engine/install/) and the [docker-compose installation guide](https://docs.docker.com/compose/install/). Dont forget to follow the [post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/) to ensure your docker environment is properly configured. 
 
-* Install utility tools: `# yum install git nano make htop wget tshark nano tree`
-* Carefully create / choose an appropriate directory to group your stacks GIT reposities (e.g. `~/AppContainers/`)
-* GIT clone this repository `git clone https://github.com/elasticlabs/https-nginx-proxy-docker-compose.git`
+- Install utility tools: `# yum install git nano make htop wget tshark nano tree`
+- Carefully create / choose an appropriate directory to group your stacks GIT reposities (e.g. `~/AppContainers/`)
+- GIT clone this repository `git clone https://github.com/elasticlabs/https-nginx-proxy-docker-compose.git`
 
 ### DNS configuration
+
 To successfully implement this solution, you'll need to ensure that the following DNS records are existing and properly pointing towards your server's IP address (replace `example.com` with your own domain name). Ensure those properly resolve from your server using `nslookup`commands
 
 | Tool | Record | description |
@@ -41,6 +45,7 @@ To successfully implement this solution, you'll need to ensure that the followin
 | SWAG Dashboard | `dash.example.com` | Your SWAG Dashboard (GoAccess) URL |
 
 ### Stack preparation
+
 This stack is composed of 4 main services : SWAG, Authelia, Portainer and Homepage. Therefore, preparing the deployment has to follow a progressive order to complete successfully.
 
 | Tool | Steps |
@@ -50,60 +55,69 @@ This stack is composed of 4 main services : SWAG, Authelia, Portainer and Homepa
 | Authelia | * move `data/authelia/config/configuration.yml.changeme` to `data/authelia/config/configuration.yml.changeme` <br> Apart from the `AUTHELIA_SUBDOMAIN` variable in the `.env` file, it's not recommanded to setup and run Authelia immediately at this step. Please make the whole stack work before enabling security. When ready, please navigate to [Authelia](#authelia) |
 | Homepage | No need to change anything in the configuration of Homepage for now, the makefile gets you covered! | 
 
-
 ## Stack initial deployment
+
 | ▲ [Top](#https-secure-reverse-proxy) |
 | --- |
 
-A lot of work has been done to make the deployment of this stack as easy as possible. The following section describes how to deploy the stack and how to use it. It is based on the `Makefile` and following operators : 
-* Get help : `make`
-* `make up` : brings up the whole stack. `up` always triggers a `make build` before, so you don't have to worry about it.
-* `make build` : (Optional) checks that everythings's OK then builds the stack images.
-* `make hard-cleanup` : /!\ Remove images, containers, networks, volumes & data
+A lot of work has been done to make the deployment of this stack as easy as possible. The following section describes how to deploy the stack and how to use it. It is based on the `Makefile` and following operators :
 
-<p>
+- Get help : `make`
+- `make up` : brings up the whole stack. `up` always triggers a `make build` before, so you don't have to worry about it.
+- `make build` : (Optional) checks that everythings's OK then builds the stack images.
+- `make hard-cleanup` : /!\ Remove images, containers, networks, volumes & data
+
 If all runs well, you should check for services status, especially SWAG with the following command : `docker compose logs swag-proxy`. Especially, negociating the certificates creation with Let's Encrypt can take a while. Please be patient. Once SWAG becomes ready, you should see something like this :
 
-```bash	
+```bash
+
 elabs-secure-proxy_swag-entrypoint  | Server ready
+
 ```
+
 Additionnal commands are available to help you manage your stack :
-* `make update` : (Optional) updates the stack images.
-* `docker compose logs <service-id>` : shows the logs of a specific service (double-tab to list available services)
-* `docker compose exec <service-id> /bin/bash` : opens a shell inside a specific service container
-* `docker compose ps` : shows the status of the whole stack
-* `docker compose ps <service-id>` : shows the status of a specific service
+
+- `make update` : (Optional) updates the stack images.
+- `docker compose logs <service-id>` : shows the logs of a specific service (double-tab to list available services)
+- `docker compose exec <service-id> /bin/bash` : opens a shell inside a specific service container
+- `docker compose ps` : shows the status of the whole stack
+- `docker compose ps <service-id>` : shows the status of a specific service
 
 
 ## Post-Install configuration
+
 | ▲ [Top](#https-secure-reverse-proxy) |
 | --- |
 
 The following section describes what your get after a successful automated depoyment and how you can refine or complement the default configuratino to better fit your needs, create accounts, and secure the whole deployment.
 
-### Portainer 
+### Portainer
+
 After deployment you have `5 minutes` to setup an `administrative user accomunt` in the Portain GUI.
-* If you fail to do it and access portainer, you'll be redirected to a `timeout.html` page.
-* When this happen, simply restart Portainer : `docker compose restart portainer`, then create this 1st account. The tool is ready.
-* **Authelia** : Once ready to secure your server, please go to the [Authelia](#authelia) section to learn more.
+
+- If you fail to do it and access portainer, you'll be redirected to a `timeout.html` page.
+- When this happen, simply restart Portainer : `docker compose restart portainer`, then create this 1st account. The tool is ready.
+- **Authelia** : Once ready to secure your server, please go to the [Authelia](#authelia) section to learn more.
 
 ### Homepage
+
 This secure gateway comes with a simple and fancy pre-configured `server homepage`. 
 I chose [Homepage](https://github.com/benphelps/homepage/) over others for its simplicity and its ability to be easily customized. It is static, and meant to be fully customizable to tailor your needs.
 
 **Configuration**
 
-* Homepage is configured through [a couple of YAML files](https://gethomepage.dev/en/configs/service-widgets/): 
-  * `bookmarks.yml` : place here a list of your favorite websites, like in your web browser, but specialized for your deployment
-  * `services.yml` : where you can [manually or automatically add your dockerized services](https://gethomepage.dev/en/configs/services/)
-  * `settings.yml` : to customize its behaviour
-  * `widgets.yml` : where you can add fancy and useful widgets to your homepage. Please go there to learn more!
-* **Authelia** : Once ready to secure your server, please go to the [Authelia](#authelia) section to learn more.
+Homepage is configured through [a couple of YAML files](https://gethomepage.dev/en/configs/service-widgets/): 
+
+- `bookmarks.yml` : place here a list of your favorite websites, like in your web browser, but specialized for your deployment
+- `services.yml` : where you can [manually or automatically add your dockerized services](https://gethomepage.dev/en/configs/services/)
+- `settings.yml` : to customize its behaviour
+- `widgets.yml` : where you can add fancy and useful widgets to your homepage. Please go there to learn more!
+- **Authelia** : Once ready to secure your server, please go to the [Authelia](#authelia) section to learn more.
 
 ### SWAG
 Big idea short : when thinking about deplying a new stack, you have 2 major choices to make :
-* Either you want your stuff to live in a **subfolder** (e.g. `https://example.com/your-app/`)
-* Or you want your stuff to live in a **subdomain** of your domain (e.g. `https://your-app.example.com/`)
+- Either you want your stuff to live in a **subfolder** (e.g. `https://example.com/your-app/`)
+- Or you want your stuff to live in a **subdomain** of your domain (e.g. `https://your-app.example.com/`)
 
 **Subfolder**
 
@@ -111,14 +125,16 @@ SWAG comes with many sample configuration files matching most common COTS on the
 
 These configuration files follow a simple naming convention : `<app-name>.subfolder.conf.sample`.
 During startup, SWAG will automatically load all the `<app-name>.subfolder.conf` files and aggregate their `location` blocks to the `default.conf`live nginx file.
-* Therefore, in this case you only act on the `location` blocks.
+
+- Therefore, in this case you only act on the `location` blocks.
 
 To operate, you need to :
-* Move the sample file to a new file without the `.sample` extension (e.g. `cp nextcloud.subfolder.conf.sample nextcloud.subfolder.conf`)
-  * You can also move the file to the `./data/swag/config/nginx/proxy-confs/` **build folder** to keep things clean and tidy (the gitignore file doesn't track the `*.sample` files).
-  * Edit the new file to match your needs (e.g. `nano nextcloud.subfolder.conf`)
-  * **Authelia** : if you want to secure access to this new app, please go to the [Authelia](#authelia) section to learn more.
-* Restart SWAG to take the new configuration into account (e.g. `docker compose restart swag`)
+
+- Move the sample file to a new file without the `.sample` extension (e.g. `cp nextcloud.subfolder.conf.sample nextcloud.subfolder.conf`)
+  - You can also move the file to the `./data/swag/config/nginx/proxy-confs/` **build folder** to keep things clean and tidy (the gitignore file doesn't track the `*.sample` files).
+  - Edit the new file to match your needs (e.g. `nano nextcloud.subfolder.conf`)
+  - **Authelia** : if you want to secure access to this new app, please go to the [Authelia](#authelia) section to learn more.
+- Restart SWAG to take the new configuration into account (e.g. `docker compose restart swag`)
 
 **Subdomain**
 
@@ -126,10 +142,11 @@ In that case, you need to create full `server` blocks for a given subdomain.
 Again, you can find sample config files in the `/config/nginx/proxy-confs/` swag-proxy container folder. Please visit the [SWAG reverse proxy documentation](https://github.com/linuxserver/reverse-proxy-confs) to learn more.
 
 To operate, you need to :
-* Copy the sample file to a new file without the `.sample` extension (e.g. `cp nextcloud.subdomain.conf.sample nextcloud.subdomain.conf`)
-  * You can also move the file to the `./data/swag/config/nginx/site-confs/` **build folder** to keep things clean and tidy (the gitignore file doesn't track the `*.sample` files).
-  * Edit the new file to match your needs (e.g. `nano nextcloud.subdomain.conf`)
-  * **Authelia** : if you want to secure access to this new app, please go to the [Authelia](#authelia) section to learn more.
+
+- Copy the sample file to a new file without the `.sample` extension (e.g. `cp nextcloud.subdomain.conf.sample nextcloud.subdomain.conf`)
+  - You can also move the file to the `./data/swag/config/nginx/site-confs/` **build folder** to keep things clean and tidy (the gitignore file doesn't track the `*.sample` files).
+  - Edit the new file to match your needs (e.g. `nano nextcloud.subdomain.conf`)
+  - **Authelia** : if you want to secure access to this new app, please go to the [Authelia](#authelia) section to learn more.
 
 **Dashboard**
 
