@@ -21,6 +21,7 @@ services:
       - EMAIL=${CERTBOT_EMAIL}
       - SUBDOMAINS=${SUBDOMAINS}
       - ONLY_SUBDOMAINS=false
+      - DOCKER_MODS=linuxserver/mods:swag-dashboard
     cap_add:
       - NET_ADMIN
     networks:
@@ -80,6 +81,10 @@ services:
       - ${PWD}/config/filebrowser/filebrowser.db:/database/filebrowser.db 
       - ${PWD}/config/filebrowser/config:/config/
       - ${PWD}/config/homepage:/app/config
+      # 
+      # From here place other services data folders
+      - ${PWD}/config/swag/config/nginx:/data/swag-config
+      - ${PWD}/config/portainer:/data/portainer-data
     networks:
       - revproxy_admin
 

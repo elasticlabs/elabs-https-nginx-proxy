@@ -43,6 +43,8 @@ build:
 	sed -i "s/changeme/${APP_BASEURL}/g" ./config/authelia/config/configuration.yml
 	sed -i "s/changeme/auth.${APP_BASEURL}/g" ./config/swag/config/nginx/snippets/authelia-authrequest.conf
 	sed -i "s/authchangeme/auth.${APP_BASEURL}/g" ./config/homepage/services.yaml
+	# Setting dashboard explicit URL
+	sed -i "s/changeme/dash.${APP_BASEURL}/g" ./config/swag/config/nginx/active-confs/dashboard.subdomain.conf
 	#
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the Secure proxy"
@@ -66,7 +68,7 @@ authelia-hash:
 
 .PHONY: hard-cleanup
 hard-cleanup:
-	@bash ./.utils/message.sh info "[INFO] Bringing done the HTTPS automated proxy"
+	@bash ./.utils/message.sh info "[INFO] Bringing down the HTTPS automated proxy"
 	docker compose -f docker-compose.yml down --remove-orphans
 	# Delete all hosted persistent data available in volumes
 	@bash ./.utils/message.sh info "[INFO] Cleaning up static volumes"
@@ -81,8 +83,7 @@ urls:
 	@bash ./.utils/message.sh link "Homepage: https://${APP_BASEURL}/"
 	@bash ./.utils/message.sh link "Portainer docker admin GUI: https://${APP_BASEURL}/portainer"
 	@bash ./.utils/message.sh link "File browser : https://${APP_BASEURL}/data"
-	#@bash ./.utils/message.sh link "Authelia portal: https://auth.${APP_BASEURL}/"
-	#@bash ./.utils/message.sh link "(Optional) SWAG dashboard: https://dash.${APP_BASEURL}"
+	@bash ./.utils/message.sh link "SWAG dashboard: https://dash.${APP_BASEURL}/"
 	@echo ""
 
 .PHONY: pull
