@@ -42,7 +42,7 @@ build:
 	sed -i "s/redirecturl/auth.${APP_BASEURL}/g" ./config/authelia/config/configuration.yml
 	sed -i "s/changeme/${APP_BASEURL}/g" ./config/authelia/config/configuration.yml
 	sed -i "s/changeme/auth.${APP_BASEURL}/g" ./config/swag/config/nginx/snippets/authelia-authrequest.conf
-	sed -i "s/authchangeme/auth.${APP_BASEURL}/g" ./config/homepage/config/services.yaml
+	sed -i "s/authchangeme/auth.${APP_BASEURL}/g" ./config/homepage/services.yaml
 	#
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the Secure proxy"
