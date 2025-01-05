@@ -83,8 +83,10 @@ services:
       - ${PWD}/config/homepage:/app/config
       # 
       # From here place other services data folders
-      - ${PWD}/config/swag/config/nginx:/data/swag-config
-      - ${PWD}/config/portainer:/data/portainer-data
+      - ${PWD}/config/swag/config/nginx:/data/config-swag
+      - ${PWD}/config/portainer:/data/config-portainer
+      - ${PWD}/config/homepage:/data/config-homepage
+      - ${PWD}/config/authelia/config:/data/config-authelia
     networks:
       - revproxy_admin
 

@@ -13,5 +13,12 @@ users:
     groups:
       - admins
       - dev
+  proxyadmin:
+    disabled: false
+    displayname: "Proxy Admin"
+    password: "$argon2id$v=19$m=65536,t=3,p=4$qloVvwb6Hc38Gy+ZuPgn+g$low/awIk/j12ddjIaLcnsSjqISwfaE8K5yNLkdXQjfo"  # Password is 'password'
+    email: admin@example.com
+    groups:
+      - admins
 ...
 # yamllint enable rule:line-length

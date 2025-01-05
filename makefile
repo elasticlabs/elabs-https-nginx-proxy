@@ -60,8 +60,8 @@ up: build
 .PHONY: authelia-hash
 authelia-hash:
 	@bash ./.utils/message.sh info "[INFO] Hash a password in Argon2 for Authelia"
-	read -p "Password: " PASSWORD; \
-	docker run authelia/authelia:latest authelia hash-password $$PASSWORD 
+	read -s -p "Password: " PASSWORD; \
+	docker run authelia/authelia:latest authelia crypto hash generate argon2 --password $$PASSWORD	 
 	@echo ""
 	@bash ./.utils/message.sh info "[INFO] You can now use it for any user in "
 	@bash ./.utils/message.sh link "./config/authelia/config/users_database.yaml"
